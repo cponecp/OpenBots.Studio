@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBots.Commands.Server", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBots.Commands.UIAutomation", "OpenBots.Commands\OpenBots.Commands.UIAutomation\OpenBots.Commands.UIAutomation.csproj", "{12D43805-8463-43A3-9915-577369B61A0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBots.Commands.Terminal", "OpenBots.Commands\OpenBots.Commands.Terminal\OpenBots.Commands.Terminal.csproj", "{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -419,6 +421,18 @@ Global
 		{12D43805-8463-43A3-9915-577369B61A0D}.Release|x64.Build.0 = Release|Any CPU
 		{12D43805-8463-43A3-9915-577369B61A0D}.Release|x86.ActiveCfg = Release|Any CPU
 		{12D43805-8463-43A3-9915-577369B61A0D}.Release|x86.Build.0 = Release|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Debug|x64.Build.0 = Debug|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Debug|x86.Build.0 = Debug|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Release|x64.ActiveCfg = Release|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Release|x64.Build.0 = Release|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Release|x86.ActiveCfg = Release|Any CPU
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -451,6 +465,7 @@ Global
 		{D104C957-9DC9-4F97-8BCE-00B21720EF2F} = {A799B480-CE25-47D7-AD13-3847ACAAA650}
 		{94AE5F8A-ECC2-4D79-A770-A0F7ACC9A9B9} = {A799B480-CE25-47D7-AD13-3847ACAAA650}
 		{12D43805-8463-43A3-9915-577369B61A0D} = {A799B480-CE25-47D7-AD13-3847ACAAA650}
+		{B6CC9937-A42E-43CE-9E6F-9A6E0D907C33} = {A799B480-CE25-47D7-AD13-3847ACAAA650}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF7B0F64-1C1B-4350-867B-E06CEB778E6F}

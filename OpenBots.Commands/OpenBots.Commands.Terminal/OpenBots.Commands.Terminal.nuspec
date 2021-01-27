@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>OpenBots.Commands.Terminal</id>
+    <version>1.3.0.0</version>
+    <title>Ternminal Commands</title>
+    <authors>OpenBots Inc</authors>
+    <owners>OpenBots Inc</owners>
+    <licenseUrl>https://github.com/OpenBotsAI/OpenBots.Studio/blob/develop/LICENSE</licenseUrl>
+    <projectUrl>https://openbots.ai</projectUrl>
+    <iconUrl>https://openbots.ai/wp-content/uploads/2020/11/Studio-Icon-256px.png</iconUrl>
+    <repository type="git" url="https://github.com/OpenBotsAI/OpenBots.Studio" branch="master" />
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>OpenBots commands for interacting with terminals.</description>
+    <releaseNotes>https://openbots.ai/category/release-notes/</releaseNotes>
+    <copyright>(C) OpenBots Inc 2020-2021</copyright>
+    <tags>OpenBots Studio Terminal Commands</tags>
+    <dependencies>
+      <group targetFramework="net48">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+		<file src="bin\Debug\OpenBots.Commands*.pdb" target="lib\net48" />
+  </files>
+</package>
