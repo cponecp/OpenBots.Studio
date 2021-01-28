@@ -212,6 +212,9 @@
     <Reference Include="OneNoteOCRDll, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OneNoteOCR.1.0.0.0\lib\OneNoteOCRDll.dll</HintPath>
     </Reference>
+    <Reference Include="Open3270, Version=1.5.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Open3270.1.5.0.1\lib\net35\Open3270.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -505,6 +508,22 @@
     <Compile Include="UI\Forms\Supplement Forms\frmWebElementRecorderSettings.Designer.cs">
       <DependentUpon>frmWebElementRecorderSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Terminal Forms\frmTerminal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Terminal Forms\frmTerminal.Designer.cs">
+      <DependentUpon>frmTerminal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Terminal Forms\frmTerminalSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Terminal Forms\frmTerminalSettings.Designer.cs">
+      <DependentUpon>frmTerminalSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Terminal Forms\OpenEmulator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Terminal Forms\TerminalKeys.cs" />
     <Compile Include="Utilities\Documentation\CommandMetaData.cs" />
     <Compile Include="Utilities\Documentation\DocumentationGeneration.cs" />
     <Compile Include="Utilities\GlobalHook.cs" />
@@ -888,6 +907,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\Supplement Forms\frmUpdate.resx">
       <DependentUpon>frmUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Terminal Forms\frmTerminal.resx">
+      <DependentUpon>frmTerminal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Terminal Forms\frmTerminalSettings.resx">
+      <DependentUpon>frmTerminalSettings.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="Firefox\omni.ja" />

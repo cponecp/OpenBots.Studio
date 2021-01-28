@@ -27,7 +27,8 @@ namespace OpenBots.Core.Project
             "DataManipulation",
             "Microsoft",
             "SystemAutomation",
-            "UIAutomation"
+            "UIAutomation",
+            "Terminal"
         };
 
         public Project(string projectName)
