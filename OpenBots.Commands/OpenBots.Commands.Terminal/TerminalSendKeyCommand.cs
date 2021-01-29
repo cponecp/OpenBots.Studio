@@ -80,8 +80,7 @@ namespace OpenBots.Commands.Input
 			TnKey selectedKey = (TnKey)Enum.Parse(typeof(TnKey), v_TerminalKey);
 			
 			terminalObject.TN3270.SetCursor(mouseX, mouseY);
-			terminalObject.TN3270.SendKey(true, selectedKey, vTimeout);
-			var newPosition = terminalObject.Coordinates;
+			terminalObject.TN3270.SendKey(false, selectedKey, vTimeout);
 			terminalObject.Redraw();
 		}
 

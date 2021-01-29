@@ -22,7 +22,7 @@ namespace OpenBots.Commands.Terminal
 	public class CreateTerminalSessionCommand : ScriptCommand
 	{
 		[Required]
-		[DisplayName("Termina Instance Name")]
+		[DisplayName("Terminal Instance Name")]
 		[Description("Enter a unique name that will represent the application instance.")]
 		[SampleUsage("MyTerminalInstance")]
 		[Remarks("This unique name allows you to refer to the instance by name in future commands, " +

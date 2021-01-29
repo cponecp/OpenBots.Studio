@@ -36,9 +36,6 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Open3270, Version=1.5.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Open3270.1.5.0.1\lib\net35\Open3270.dll</HintPath>
-    </Reference>
     <Reference Include="RestSharp, Version=106.11.7.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
     </Reference>
@@ -57,9 +54,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TerminalSendKeyCommand.cs" />
     <Compile Include="TerminalWaitForTextCommand.cs" />
+    <Compile Include="DumpTerminalScreenXMLCommand.cs" />
     <Compile Include="TerminalSetTextCommand.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Open3270Library\Open3270Library.csproj">
+      <Project>{0c1c4a52-4b1a-49e3-b980-b11c6d8b51ee}</Project>
+      <Name>Open3270Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\OpenBots.Core\OpenBots.Core.csproj">
       <Project>{6956836d-d2b0-4b7a-b06d-fa3a22b4c4ff}</Project>
       <Name>OpenBots.Core</Name>
@@ -71,7 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Library\" />
