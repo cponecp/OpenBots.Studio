@@ -911,6 +911,9 @@
     <EmbeddedResource Include="UI\Terminal Forms\frmTerminalSettings.resx">
       <DependentUpon>frmTerminalSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Terminal Forms\OpenEmulator.resx">
+      <DependentUpon>OpenEmulator.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="Firefox\omni.ja" />
     <None Include="LICENSE" />

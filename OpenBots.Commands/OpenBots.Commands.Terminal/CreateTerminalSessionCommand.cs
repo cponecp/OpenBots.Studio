@@ -142,7 +142,7 @@ namespace OpenBots.Commands.Terminal
 		{
 			var terminalForm = new frmTerminal(host, port, terminalType, useSsl);
 			terminalForm.Show();
-			terminalForm.btnConnect_Click(null, null);
+			terminalForm.connectToolStripMenuItem_Click(null, null);
 			_emulator = terminalForm.OpenEmulator;
 		}
 

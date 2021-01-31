@@ -53,6 +53,8 @@
     <Compile Include="CreateTerminalSessionCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TerminalSendKeyCommand.cs" />
+    <Compile Include="TerminalGetFieldsCommand.cs" />
+    <Compile Include="TerminalSetFieldCommand.cs" />
     <Compile Include="TerminalWaitForTextCommand.cs" />
     <Compile Include="DumpTerminalScreenXMLCommand.cs" />
     <Compile Include="TerminalSetTextCommand.cs" />

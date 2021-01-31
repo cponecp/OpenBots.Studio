@@ -1,6 +1,7 @@
 ﻿using Open3270;
 using OpenBots.Core.UI.Forms;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace OpenBots.Commands.Terminal.Forms
@@ -22,14 +23,22 @@ namespace OpenBots.Commands.Terminal.Forms
             _useSsl = useSsl;
 
             InitializeComponent();
+            OpenEmulator.InitializeComponent();
         }
 
         public frmTerminal()
         {
             InitializeComponent();
+            OpenEmulator.InitializeComponent();
         }
 
-        private void btnSettings_Click(object sender, EventArgs e)
+        public void connectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenEmulator.Connect(_host, _port, _terminalType, _useSsl);
+            TN3270 = OpenEmulator.TN3270;
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             settings.ShowDialog();
 
@@ -42,19 +51,13 @@ namespace OpenBots.Commands.Terminal.Forms
             }
         }
 
-        public void btnConnect_Click(object sender, EventArgs e)
-        {
-            OpenEmulator.Connect(_host, _port, _terminalType, _useSsl);
-            TN3270 = OpenEmulator.TN3270;
-        }
-
         private void OpenEmulator_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode == Keys.Tab)
                 e.IsInputKey = true;
         }
 
-        private void btnDisconnect_Click(object sender, EventArgs e)
+        private void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenEmulator.Disconnect();
             TN3270 = null;
@@ -67,7 +70,7 @@ namespace OpenBots.Commands.Terminal.Forms
 
         private void OpenEmulator_SelectionChanged(object sender, EventArgs e)
         {
-            lblCoordinates.Text = $"Coordinates: {OpenEmulator.Coordinates}";
-        }
+            coordinatesToolStripMenuItem.Text = $"Coordinates: {OpenEmulator.Coordinates}";
+        }       
     }
 }

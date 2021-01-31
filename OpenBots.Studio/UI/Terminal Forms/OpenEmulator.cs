@@ -1,27 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Open3270;
-using OpenBots.Utilities;
+﻿using Open3270;
 using OpenBots.Commands.Terminal.Library;
+using OpenBots.Utilities;
+using System;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
 
 namespace OpenBots.Commands.Terminal.Forms
 {
-    public class OpenEmulator : RichTextBox
+    public class OpenEmulator : RichTextBox, IAudit
     {
         public TNEmulator TN3270 = new TNEmulator();
         private bool IsRedrawing = false;
         public Point Coordinates { get; set; } = new Point(0, 0);
+        public int FieldIndex { get; set; } = 0;
+
         public void Connect(string Server, int Port, string Type, bool UseSsl)
         {
             try
             {
                 TN3270.Config.UseSSL = UseSsl;
                 TN3270.Config.TermType = Type;
+                TN3270.Audit = this;
+                TN3270.Debug = true;
+                TN3270.Config.FastScreenMode = true;
+
                 TN3270.Connect(Server, Port, string.Empty);
 
                 Redraw();
@@ -29,8 +32,7 @@ namespace OpenBots.Commands.Terminal.Forms
             catch (Exception)
             {
 
-            }
-            
+            }           
         }
 
         public void Disconnect()
@@ -56,8 +58,8 @@ namespace OpenBots.Commands.Terminal.Forms
                 Render.Text = TN3270.CurrentScreenXML.Dump();
 
                 Clear();
-                Font fnt = new Font("Consolas", 10);
-                Render.Font = new Font(fnt, FontStyle.Regular);
+
+                Render.Font = Font;
 
 
                 Render.SelectAll();
@@ -76,8 +78,6 @@ namespace OpenBots.Commands.Terminal.Forms
                             Render.SelectionColor = Color.Lime;
                     }
                     return;
-
-                    //Render.SelectionStart = (TN3270.CursorY) * 80 + TN3270.CursorX;
                 }
 
                 Render.SelectionProtected = true;
@@ -95,7 +95,7 @@ namespace OpenBots.Commands.Terminal.Forms
                     else if (field.Attributes.Protected)
                         clr = Color.RoyalBlue;
 
-                    Render.Select(field.Location.position + field.Location.top, field.Location.length);
+                    Render.Select((field.Location.top * 84 + 172) + field.Location.left + 3, field.Location.length);
                     Render.SelectionProtected = false;
                     Render.SelectionColor = clr;
                     if (clr == Color.White || clr == Color.RoyalBlue)
@@ -203,10 +203,44 @@ namespace OpenBots.Commands.Terminal.Forms
 
                     Coordinates = new Point(x, y);
                     TN3270.SetCursor(Coordinates.X, Coordinates.Y);
-                    
+
+                    foreach (Open3270.TN3270.XMLScreenField field in TN3270.CurrentScreenXML.Fields)
+                    { 
+                        if ((Coordinates.X >= field.Location.left && Coordinates.X < field.Location.left + field.Location.length) &&
+                            (Coordinates.Y >= field.Location.top))// && Coordinates.Y <= field.Location))
+                        {
+                            FieldIndex = Array.IndexOf(TN3270.CurrentScreenXML.Fields, field);
+                            //Console.WriteLine(FieldIndex);
+
+                            //TN3270.fiel
+                        }
+                    }
+
                     base.OnSelectionChanged(e);
                 }
             }
+        }
+
+        public void InitializeComponent()
+        {
+            SuspendLayout();
+            // 
+            // OpenEmulator
+            // 
+            Font = new Font("Consolas", 10F, FontStyle.Regular);
+            Size = new Size(Font.Height * 39, Font.Height * 31);
+            ResumeLayout(false);
+
+        }
+
+        public void WriteLine(string text)
+        {
+            Console.WriteLine(text);
+        }
+
+        public void Write(string text)
+        {
+            Console.Write(text);
         }
     }
 }

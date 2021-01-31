@@ -7,9 +7,9 @@ namespace OpenBots.Commands.Terminal.Forms
     public partial class frmTerminalSettings : UIForm
     {
         public string Host { get { return txtHost.Text; } }
-        public int Port { get { return int.Parse(txtHostPort.Text); } }
+        public int Port { get { return int.Parse(txtPort.Text); } }
         public string TerminalType { get { return txtTerminalType.Text; } }
-        public bool UseSsl { get { return cbUseSSL.Checked; } }
+        public bool UseSsl { get { return cbxUseSSL.Checked; } }
 
         public frmTerminalSettings()
         {
