@@ -1,7 +1,9 @@
 ﻿using Open3270;
 using OpenBots.Core.UI.Forms;
+using OpenBots.Core.Utilities.CommonUtilities;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace OpenBots.Commands.Terminal.Forms
@@ -24,12 +26,14 @@ namespace OpenBots.Commands.Terminal.Forms
 
             InitializeComponent();
             OpenEmulator.InitializeComponent();
+            Size = new Size(OpenEmulator.Size.Width + 20, OpenEmulator.Height + msTerminal.Height + 50);
         }
 
         public frmTerminal()
         {
             InitializeComponent();
             OpenEmulator.InitializeComponent();
+            Size = new Size(OpenEmulator.Size.Width + 20, OpenEmulator.Height + msTerminal.Height + 50);
         }
 
         public void connectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -66,11 +70,19 @@ namespace OpenBots.Commands.Terminal.Forms
         private void frmTerminal_FormClosing(object sender, FormClosingEventArgs e)
         {
             OpenEmulator.Disconnect();
+            OpenEmulator.Dispose();
         }
 
         private void OpenEmulator_SelectionChanged(object sender, EventArgs e)
         {
-            coordinatesToolStripMenuItem.Text = $"Coordinates: {OpenEmulator.Coordinates}";
-        }       
+            coordinatesToolStripMenuItem.Text = $"Coord: {OpenEmulator.Coordinates}";
+            fieldIndexToolStripMenuItem.Text = $"Field Index: {OpenEmulator.FieldIndex}";
+        }
+
+        public void fieldsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fields = StringMethods.ConvertListToString(TN3270.CurrentScreenXML.Fields.ToList());
+            MessageBox.Show(fields, "Terminal Fields");
+        }
     }
 }

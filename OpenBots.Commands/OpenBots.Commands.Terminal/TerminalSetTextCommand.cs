@@ -16,7 +16,7 @@ namespace OpenBots.Commands.Input
 {
     [Serializable]
 	[Category("Terminal Commands")]
-	[Description("This command sends keystrokes to a targeted terminal.")]
+	[Description("This command sets text at a targeted terminal screen's coordinates.")]
 	public class TerminalSetTextCommand : ScriptCommand
 	{
 		[Required]
@@ -43,12 +43,12 @@ namespace OpenBots.Commands.Input
 		public string v_YMousePosition { get; set; }
 
 		[Required]
-		[DisplayName("Text to Send")]
+		[DisplayName("Text to Set")]
 		[Description("Enter the text to be sent to the specified terminal.")]
 		[SampleUsage("Hello, World! || {vText}")]
 		[Remarks("")]
 		[Editor("ShowVariableHelper", typeof(UIAdditionalHelperType))]
-		public string v_TextToSend { get; set; }
+		public string v_TextToSet { get; set; }
 
 		public TerminalSetTextCommand()
 		{
@@ -64,11 +64,12 @@ namespace OpenBots.Commands.Input
 			var engine = (IAutomationEngineInstance)sender;
 			var mouseX = int.Parse(v_XMousePosition.ConvertUserVariableToString(engine));
 			var mouseY = int.Parse(v_YMousePosition.ConvertUserVariableToString(engine));
-			string textToSend = v_TextToSend.ConvertUserVariableToString(engine);
+			string textToSend = v_TextToSet.ConvertUserVariableToString(engine);
 			var terminalObject = (OpenEmulator)v_InstanceName.GetAppInstance(engine);
 
-			var oldPosition = $"Old position: {mouseX}, {mouseY}";
-			
+			if (terminalObject.TN3270 == null || !terminalObject.TN3270.IsConnected)
+				throw new Exception($"Terminal Instance {v_InstanceName} is not connected.");
+
 			terminalObject.TN3270.SetCursor(mouseX, mouseY);
 			terminalObject.TN3270.SetText(textToSend);
 
@@ -82,14 +83,14 @@ namespace OpenBots.Commands.Input
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_InstanceName", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_XMousePosition", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_YMousePosition", this, editor));
-			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_TextToSend", this, editor));
+			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_TextToSet", this, editor));
 
 			return RenderedControls;
 		}
 
 		public override string GetDisplayValue()
 		{
-			return base.GetDisplayValue() + $" [Text '{v_TextToSend}' - Instance Name '{v_InstanceName}']";
+			return base.GetDisplayValue() + $" [Text '{v_TextToSet}' at Coordinates '{{{v_XMousePosition}, {v_YMousePosition}}}' - Instance Name '{v_InstanceName}']";
 		}     
 	}
 }

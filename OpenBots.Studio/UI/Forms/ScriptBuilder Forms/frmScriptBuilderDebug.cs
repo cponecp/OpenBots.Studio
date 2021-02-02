@@ -163,7 +163,7 @@ namespace OpenBots.UI.Forms.ScriptBuilder_Forms
                 string debugName = ((DataGridView)sender).Rows[e.RowIndex].Cells[0].Value.ToString();               
                 string debugValue = ((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
-                frmDialog debugDialog = new frmDialog(debugValue, debugName, DialogType.OkCancel, 0);
+                frmDialog debugDialog = new frmDialog(debugValue, debugName, DialogType.CancelOnly, 0);
                 debugDialog.Show();
             }
         }

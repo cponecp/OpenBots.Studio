@@ -22,7 +22,7 @@ namespace OpenBots.Commands.Terminal.Forms
                 TN3270.Config.UseSSL = UseSsl;
                 TN3270.Config.TermType = Type;
                 TN3270.Audit = this;
-                TN3270.Debug = true;
+                //TN3270.Debug = true;
                 TN3270.Config.FastScreenMode = true;
 
                 TN3270.Connect(Server, Port, string.Empty);
@@ -54,33 +54,27 @@ namespace OpenBots.Commands.Terminal.Forms
             {
                 IsRedrawing = true;
 
-                RichTextBox Render = new RichTextBox();
-                Render.Text = TN3270.CurrentScreenXML.Dump();
+                Text = TN3270.CurrentScreenXML.Dump();
 
-                Clear();
-
-                Render.Font = Font;
-
-
-                Render.SelectAll();
+                SelectAll();
+                SelectionColor = Color.Lime;
 
                 if (TN3270.CurrentScreenXML.Fields == null)
                 {
-                    Color clr = Color.Lime;
-                    Render.SelectionProtected = false;
-                    Render.SelectionColor = clr;
-                    Render.DeselectAll();
+                    SelectionProtected = false;
+                    SelectionColor = Color.Lime;
+                    DeselectAll();
 
-                    for (int i = 0; i < Render.Text.Length; i++)
+                    for (int i = 0; i < Text.Length; i++)
                     {
-                        Render.Select(i, 1);
-                        if (Render.SelectedText != " " && Render.SelectedText != "\n")
-                            Render.SelectionColor = Color.Lime;
+                        Select(i, 1);
+                        if (SelectedText != " " && SelectedText != "\n")
+                            SelectionColor = Color.Lime;
                     }
                     return;
                 }
 
-                Render.SelectionProtected = true;
+                SelectionProtected = true;
                 foreach (Open3270.TN3270.XMLScreenField field in TN3270.CurrentScreenXML.Fields)
                 {
                     //if (string.IsNullOrEmpty(field.Text))
@@ -95,32 +89,18 @@ namespace OpenBots.Commands.Terminal.Forms
                     else if (field.Attributes.Protected)
                         clr = Color.RoyalBlue;
 
-                    Render.Select((field.Location.top * 84 + 172) + field.Location.left + 3, field.Location.length);
-                    Render.SelectionProtected = false;
-                    Render.SelectionColor = clr;
+                    Select((field.Location.top * 84 + 172) + field.Location.left + 3, field.Location.length);
+                    SelectionProtected = false;
+                    SelectionColor = clr;
                     if (clr == Color.White || clr == Color.RoyalBlue)
-                        Render.SelectionProtected = true;
+                        SelectionProtected = true;
                 }
 
-                for (int i = 0; i < Render.Text.Length; i++)
-                {
-                    Render.Select(i, 1);
-                    if (Render.SelectedText != " " && Render.SelectedText != "\n" && Render.SelectionColor == Color.Black)
-                    {
-                        Render.SelectionProtected = false;
-                        Render.SelectionColor = Color.Lime;
-                    }
-                }
-
-                Rtf = Render.Rtf;
                 Console.WriteLine("Before " + Coordinates.ToString());
-                //Coordinates = new Point(TN3270.CursorX, TN3270.CursorY);
-
-
 
                 IsRedrawing = false;
 
-                this.Select((TN3270.CursorY * 84 + 172) + TN3270.CursorX + 3, 0);
+                Select((TN3270.CursorY * 84 + 172) + TN3270.CursorX + 3, 0);
                 Console.WriteLine("After " + Coordinates.ToString());
             }
             
@@ -203,16 +183,28 @@ namespace OpenBots.Commands.Terminal.Forms
 
                     Coordinates = new Point(x, y);
                     TN3270.SetCursor(Coordinates.X, Coordinates.Y);
+                    var fields = TN3270.GetFields();
+                    Console.WriteLine(fields);
+
+                    FieldIndex = -1;
 
                     foreach (Open3270.TN3270.XMLScreenField field in TN3270.CurrentScreenXML.Fields)
                     { 
-                        if ((Coordinates.X >= field.Location.left && Coordinates.X < field.Location.left + field.Location.length) &&
-                            (Coordinates.Y >= field.Location.top))// && Coordinates.Y <= field.Location))
+                        //if ((Coordinates.X >= field.Location.left && Coordinates.X < field.Location.left + field.Location.length) &&
+                        //    (Coordinates.Y >= field.Location.top))// && Coordinates.Y <= field.Location))
+                        //{
+                        //    //FieldIndex = Array.IndexOf(TN3270.CurrentScreenXML.Fields, field);
+                        //    //Console.WriteLine($"Field Index: {FieldIndex}");
+
+                        //    Console.WriteLine(field);
+                        //}
+                        if ((Coordinates.Y * 80 + Coordinates.X) >= field.Location.position &&
+                            (Coordinates.Y * 80 + Coordinates.X) < field.Location.position + field.Location.length)
                         {
                             FieldIndex = Array.IndexOf(TN3270.CurrentScreenXML.Fields, field);
-                            //Console.WriteLine(FieldIndex);
-
-                            //TN3270.fiel
+                            Console.WriteLine($"Field index = {FieldIndex}");
+                            Console.WriteLine(field.Text);
+                            
                         }
                     }
 

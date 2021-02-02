@@ -14,7 +14,7 @@ namespace OpenBots.Commands.Input
 {
     [Serializable]
 	[Category("Terminal Commands")]
-	[Description("This command waits for text to appear on the terminal screen.")]
+	[Description("This command retrieves and loads the text from a targeted terminal screen.")]
 	public class DumpTerminalScreenXMLCommand : ScriptCommand
 	{
 		[Required]
@@ -38,6 +38,9 @@ namespace OpenBots.Commands.Input
 		{
 			var engine = (IAutomationEngineInstance)sender;
 			var terminalObject = (OpenEmulator)v_InstanceName.GetAppInstance(engine);
+
+			if (terminalObject.TN3270 == null || !terminalObject.TN3270.IsConnected)
+				throw new Exception($"Terminal Instance {v_InstanceName} is not connected.");
 
 			terminalObject.Redraw();
 		}

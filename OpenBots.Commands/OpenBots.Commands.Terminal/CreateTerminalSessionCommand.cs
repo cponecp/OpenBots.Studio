@@ -82,8 +82,6 @@ namespace OpenBots.Commands.Terminal
 			var host = v_Host.ConvertUserVariableToString(engine);
 			var port = int.Parse(v_Port.ConvertUserVariableToString(engine));
 			var terminalType = v_TerminalType.ConvertUserVariableToString(engine);
-
-
 			bool useSsl;
 
 			if (v_UseSsl == "Yes")
@@ -91,8 +89,6 @@ namespace OpenBots.Commands.Terminal
 			else
 				useSsl = false;
 
-			//var userName = v_UserName.ConvertUserVariableToString(engine);
-			//var password = v_Password.ConvertUserVariableToString(engine);
 
 			if (engine.AutomationEngineContext.ScriptEngine != null)
 			{
@@ -127,15 +123,13 @@ namespace OpenBots.Commands.Terminal
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_Port", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_TerminalType", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_UseSsl", this, editor));
-			//RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_UserName", this, editor));
-			//RenderedControls.AddRange(commandControls.CreateDefaultPasswordInputGroupFor("v_Password", this, editor));
 
 			return RenderedControls;
 		}
 
 		public override string GetDisplayValue()
 		{
-			return base.GetDisplayValue() + $" [Host '{v_Host} - Port '{v_Port}']";
+			return base.GetDisplayValue() + $" [Host '{v_Host} - Port '{v_Port}' - New Instance Name '{v_InstanceName}']";
 		}
 
 		public void LaunchTerminalSession(string host, int port, string terminalType, bool useSsl)
@@ -143,6 +137,9 @@ namespace OpenBots.Commands.Terminal
 			var terminalForm = new frmTerminal(host, port, terminalType, useSsl);
 			terminalForm.Show();
 			terminalForm.connectToolStripMenuItem_Click(null, null);
+			if (!terminalForm.TN3270.IsConnected)
+				throw new Exception($"Unable to connect to host: '{host}', port: '{port}'");
+
 			_emulator = terminalForm.OpenEmulator;
 		}
 

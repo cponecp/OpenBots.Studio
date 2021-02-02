@@ -83,7 +83,8 @@ namespace OpenBots.Core.Enums
     {
         YesNo,
         OkCancel,
-        OkOnly
+        OkOnly,
+        CancelOnly
     }
 
     public enum SinkType

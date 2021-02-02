@@ -17,7 +17,7 @@ namespace OpenBots.Commands.Input
 {
     [Serializable]
 	[Category("Terminal Commands")]
-	[Description("This command sends advanced keystrokes to a targeted terminal.")]
+	[Description("This command sends advanced keystrokes to a targeted terminal screen.")]
 	public class TerminalSendKeyKeyCommand : ScriptCommand
 	{
 		[Required]
@@ -76,6 +76,9 @@ namespace OpenBots.Commands.Input
 			var mouseY = int.Parse(v_YMousePosition.ConvertUserVariableToString(engine));
 			var vTimeout = int.Parse(v_Timeout.ConvertUserVariableToString(engine)) * 1000;
 			OpenEmulator terminalObject = (OpenEmulator)v_InstanceName.GetAppInstance(engine);
+
+			if (terminalObject.TN3270 == null || !terminalObject.TN3270.IsConnected)
+				throw new Exception($"Terminal Instance {v_InstanceName} is not connected.");
 
 			TnKey selectedKey = (TnKey)Enum.Parse(typeof(TnKey), v_TerminalKey);
 			

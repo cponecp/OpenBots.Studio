@@ -33,7 +33,9 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.coordinatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fieldsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenEmulator = new OpenBots.Commands.Terminal.Forms.OpenEmulator();
+            this.fieldIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.msTerminal.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,12 +46,14 @@
             this.msTerminal.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.msTerminal.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectToolStripMenuItem,
-            this.settingsToolStripMenuItem,
             this.disconnectToolStripMenuItem,
-            this.coordinatesToolStripMenuItem});
+            this.settingsToolStripMenuItem,
+            this.fieldsToolStripMenuItem,
+            this.coordinatesToolStripMenuItem,
+            this.fieldIndexToolStripMenuItem});
             this.msTerminal.Location = new System.Drawing.Point(0, 0);
             this.msTerminal.Name = "msTerminal";
-            this.msTerminal.Size = new System.Drawing.Size(977, 36);
+            this.msTerminal.Size = new System.Drawing.Size(815, 45);
             this.msTerminal.TabIndex = 5;
             this.msTerminal.Text = "menuStrip1";
             // 
@@ -57,7 +61,7 @@
             // 
             this.connectToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(98, 32);
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(98, 41);
             this.connectToolStripMenuItem.Text = "Connect";
             this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
             // 
@@ -65,7 +69,7 @@
             // 
             this.settingsToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(97, 32);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(97, 41);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -73,7 +77,7 @@
             // 
             this.disconnectToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
-            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(122, 32);
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(122, 41);
             this.disconnectToolStripMenuItem.Text = "Disconnect";
             this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
             // 
@@ -82,26 +86,43 @@
             this.coordinatesToolStripMenuItem.Enabled = false;
             this.coordinatesToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.coordinatesToolStripMenuItem.Name = "coordinatesToolStripMenuItem";
-            this.coordinatesToolStripMenuItem.Size = new System.Drawing.Size(141, 32);
+            this.coordinatesToolStripMenuItem.Size = new System.Drawing.Size(141, 41);
             this.coordinatesToolStripMenuItem.Text = "Coordinates: ";
+            // 
+            // fieldsToolStripMenuItem
+            // 
+            this.fieldsToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.fieldsToolStripMenuItem.Name = "fieldsToolStripMenuItem";
+            this.fieldsToolStripMenuItem.Size = new System.Drawing.Size(76, 41);
+            this.fieldsToolStripMenuItem.Text = "Fields";
+            this.fieldsToolStripMenuItem.Click += new System.EventHandler(this.fieldsToolStripMenuItem_Click);
             // 
             // OpenEmulator
             // 
             this.OpenEmulator.BackColor = System.Drawing.SystemColors.WindowText;
             this.OpenEmulator.Coordinates = new System.Drawing.Point(0, 0);
-            this.OpenEmulator.Location = new System.Drawing.Point(12, 49);
+            this.OpenEmulator.FieldIndex = 0;
+            this.OpenEmulator.Location = new System.Drawing.Point(0, 36);
             this.OpenEmulator.Name = "OpenEmulator";
-            this.OpenEmulator.Size = new System.Drawing.Size(953, 610);
+            this.OpenEmulator.Size = new System.Drawing.Size(815, 562);
             this.OpenEmulator.TabIndex = 0;
             this.OpenEmulator.Text = "";
             this.OpenEmulator.SelectionChanged += new System.EventHandler(this.OpenEmulator_SelectionChanged);
             this.OpenEmulator.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.OpenEmulator_PreviewKeyDown);
             // 
+            // fieldIndexToolStripMenuItem
+            // 
+            this.fieldIndexToolStripMenuItem.Enabled = false;
+            this.fieldIndexToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.fieldIndexToolStripMenuItem.Name = "fieldIndexToolStripMenuItem";
+            this.fieldIndexToolStripMenuItem.Size = new System.Drawing.Size(129, 41);
+            this.fieldIndexToolStripMenuItem.Text = "Field Index: ";
+            // 
             // frmTerminal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(977, 677);
+            this.ClientSize = new System.Drawing.Size(652, 480);
             this.Controls.Add(this.OpenEmulator);
             this.Controls.Add(this.msTerminal);
             this.MainMenuStrip = this.msTerminal;
@@ -123,5 +144,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem coordinatesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fieldsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fieldIndexToolStripMenuItem;
     }
 }

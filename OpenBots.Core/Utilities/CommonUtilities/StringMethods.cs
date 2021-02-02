@@ -1,5 +1,6 @@
 ﻿using Microsoft.Office.Interop.Outlook;
 using MimeKit;
+using Open3270.TN3270;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -120,11 +121,14 @@ namespace OpenBots.Core.Utilities.CommonUtilities
                         return ConvertBitmapToString((Bitmap)obj);
                     case "System.Collections.Generic.KeyValuePair":
                         return ConvertBitmapToString((Bitmap)obj);
+                    case "Open3270.TN3270.XMLScreenField":
+                        return ConvertXMLScreenFieldToString((XMLScreenField)obj);
                     case string a when a.Contains("System.Collections.Generic.List`1[[System.String"):
                     case string b when b.Contains("System.Collections.Generic.List`1[[System.Data.DataTable"):
                     case string c when c.Contains("System.Collections.Generic.List`1[[Microsoft.Office.Interop.Outlook.MailItem"):
                     case string d when d.Contains("System.Collections.Generic.List`1[[MimeKit.MimeMessage"):
                     case string e when e.Contains("System.Collections.Generic.List`1[[OpenQA.Selenium.IWebElement"):
+                    case string f when f.Contains("System.Collections.Generic.List`1[[Open3270.TN3270.XMLScreenField"):
                         return ConvertListToString(obj);
                     case string a when a.Contains("System.Collections.Generic.Dictionary`2[[System.String") && a.Contains("],[System.String"):
                     case string b when b.Contains("System.Collections.Generic.Dictionary`2[[System.String") && b.Contains("],[System.Data.DataTable"):
@@ -283,6 +287,15 @@ namespace OpenBots.Core.Utilities.CommonUtilities
             return stringBuilder.ToString();
         }
 
+        public static string ConvertXMLScreenFieldToString(XMLScreenField field)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append($"[Start Coordinates: {field.Location.left}, {field.Location.top}, \n" +
+                                 $"Field Length: {field.Location.length}, \n" +
+                                 $"Field Text: {field.Text}]");
+            return stringBuilder.ToString();
+        }
+
         public static string ConvertListToString(object list)
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -351,6 +364,20 @@ namespace OpenBots.Core.Utilities.CommonUtilities
 
                 if (elementList.Count > 0)
                     stringBuilder.AppendFormat("{0}]", ConvertIWebElementToString(elementList[elementList.Count - 1]));
+                else
+                    stringBuilder.Length = stringBuilder.Length - 3;
+            }
+            else if (type == typeof(XMLScreenField))
+            {
+                List<XMLScreenField> fieldList = ((List<XMLScreenField>)list).Take(3).ToList();
+
+                stringBuilder.Append($"Count({fieldList.Count}) \n[");
+
+                for (int i = 0; i < fieldList.Count - 1; i++)
+                    stringBuilder.AppendFormat("{0}, \n", ConvertXMLScreenFieldToString(fieldList[i]));
+
+                if (fieldList.Count > 0)
+                    stringBuilder.AppendFormat("{0}]", ConvertXMLScreenFieldToString(fieldList[fieldList.Count - 1]));
                 else
                     stringBuilder.Length = stringBuilder.Length - 3;
             }

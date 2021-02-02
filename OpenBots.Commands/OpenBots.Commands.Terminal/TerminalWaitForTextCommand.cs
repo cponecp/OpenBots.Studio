@@ -15,7 +15,7 @@ namespace OpenBots.Commands.Input
 {
     [Serializable]
 	[Category("Terminal Commands")]
-	[Description("This command waits for text to appear on the terminal screen.")]
+	[Description("This command waits for text to appear on a targeted terminal screen.")]
 	public class TerminalWaitForTextCommand : ScriptCommand
 	{
 		[Required]
@@ -57,6 +57,9 @@ namespace OpenBots.Commands.Input
 			string textToWaitFor = v_TextToWaitFor.ConvertUserVariableToString(engine);
 			var vTimeout = int.Parse(v_Timeout.ConvertUserVariableToString(engine)) * 1000;
 			var terminalObject = (OpenEmulator)v_InstanceName.GetAppInstance(engine);
+
+			if (terminalObject.TN3270 == null || !terminalObject.TN3270.IsConnected)
+				throw new Exception($"Terminal Instance {v_InstanceName} is not connected.");
 
 			terminalObject.TN3270.WaitForTextOnScreen(vTimeout, textToWaitFor);
 		}
