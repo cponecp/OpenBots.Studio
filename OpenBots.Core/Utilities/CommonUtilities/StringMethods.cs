@@ -369,7 +369,7 @@ namespace OpenBots.Core.Utilities.CommonUtilities
             }
             else if (type == typeof(XMLScreenField))
             {
-                List<XMLScreenField> fieldList = ((List<XMLScreenField>)list).Take(3).ToList();
+                List<XMLScreenField> fieldList = ((List<XMLScreenField>)list).ToList();
 
                 stringBuilder.Append($"Count({fieldList.Count}) \n[");
 

@@ -15,30 +15,49 @@ namespace OpenBots.Commands.Terminal.Forms
         public Point Coordinates { get; set; } = new Point(0, 0);
         public int FieldIndex { get; set; } = 0;
 
-        public void Connect(string Server, int Port, string Type, bool UseSsl)
+
+        public delegate void ConnectDelegate(string server, int port, string type, bool useSsl);
+        public void Connect(string server, int port, string type, bool useSsl)
         {
-            try
+            if (InvokeRequired)
             {
-                TN3270.Config.UseSSL = UseSsl;
-                TN3270.Config.TermType = Type;
-                TN3270.Audit = this;
-                //TN3270.Debug = true;
-                TN3270.Config.FastScreenMode = true;
-
-                TN3270.Connect(Server, Port, string.Empty);
-
-                Redraw();
+                var d = new ConnectDelegate(Connect);
+                Invoke(d, new object[] { server, port, type, useSsl });
             }
-            catch (Exception)
+            else
             {
+                try
+                {
+                    TN3270.Config.UseSSL = useSsl;
+                    TN3270.Config.TermType = type;
+                    TN3270.Audit = this;
+                    //TN3270.Debug = true;
+                    TN3270.Config.FastScreenMode = true;
 
-            }           
+                    TN3270.Connect(server, port, string.Empty);
+
+                    Redraw();
+                }
+                catch (Exception)
+                {
+
+                }
+            }                 
         }
 
+        public delegate void DisconnectDelegate();
         public void Disconnect()
         {
-            TN3270.Close();
-            Rtf = "";
+            if (InvokeRequired)
+            {
+                var d = new DisconnectDelegate(Disconnect);
+                Invoke(d, new object[] { });
+            }
+            else
+            {
+                TN3270.Close();
+                Rtf = "";
+            }          
         }
 
 
@@ -233,6 +252,20 @@ namespace OpenBots.Commands.Terminal.Forms
         public void Write(string text)
         {
             Console.Write(text);
+        }
+
+        public delegate void DisposeTerminalDelegate();
+        public void DisposeTerminal()
+        {
+            if (InvokeRequired)
+            {
+                var d = new DisposeTerminalDelegate(DisposeTerminal);
+                Invoke(d, new object[] { });
+            }
+            else
+            {
+                Dispose();
+            }
         }
     }
 }

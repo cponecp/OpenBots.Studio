@@ -84,5 +84,19 @@ namespace OpenBots.Commands.Terminal.Forms
             string fields = StringMethods.ConvertListToString(TN3270.CurrentScreenXML.Fields.ToList());
             MessageBox.Show(fields, "Terminal Fields");
         }
+
+        public delegate void CloseFormDelegate();
+        public void CloseForm()
+        {
+            if (InvokeRequired)
+            {
+                var d = new CloseFormDelegate(CloseForm);
+                Invoke(d, new object[] { });
+            }
+            else
+            {
+                Close();
+            }
+        }
     }
 }

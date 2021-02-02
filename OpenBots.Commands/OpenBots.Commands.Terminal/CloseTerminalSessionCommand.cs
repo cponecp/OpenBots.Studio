@@ -26,8 +26,8 @@ namespace OpenBots.Commands.Terminal
 
 		public CloseTerminalSessionCommand()
 		{
-			CommandName = "CreateTerminalSessionCommand";
-			SelectionName = "Create Terminal Session";
+			CommandName = "CloseTerminalSessionCommand";
+			SelectionName = "Close Terminal Session";
 			CommandEnabled = true;
 			CommandIcon = Resources.command_system;
 
@@ -42,9 +42,7 @@ namespace OpenBots.Commands.Terminal
 			if (terminalObject.TN3270 == null || !terminalObject.TN3270.IsConnected)
 				throw new Exception($"Terminal Instance {v_InstanceName} is not connected.");
 
-			terminalObject.Disconnect();
-			terminalObject.Dispose();
-			((Form)terminalObject.Parent).Close();
+			((frmTerminal)terminalObject.Parent).CloseForm();
 
 			//remove instance
 			v_InstanceName.RemoveAppInstance(engine);

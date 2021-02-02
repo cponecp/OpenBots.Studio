@@ -63,7 +63,7 @@ namespace OpenBots.Commands.Input
 
 		[Required]
 		[Editable(false)]
-		[DisplayName("Output Field Variable")]
+		[DisplayName("Output Field Index Variable")]
 		[Description("Create a new variable or select a variable from the list.")]
 		[SampleUsage("{vUserVariable}")]
 		[Remarks("Variables not pre-defined in the Variable Manager will be automatically generated at runtime.")]
@@ -85,16 +85,14 @@ namespace OpenBots.Commands.Input
 			CommandIcon = Resources.command_system;
 
 			v_InstanceName = "DefaultTerminal";
+			v_Option = "Coordinates";
 		}
 
 		public override void RunCommand(object sender)
 		{
 			var engine = (IAutomationEngineInstance)sender;
 			var terminalObject = (OpenEmulator)v_InstanceName.GetAppInstance(engine);
-			var mouseX = int.Parse(v_XMousePosition.ConvertUserVariableToString(engine));
-			var mouseY = int.Parse(v_YMousePosition.ConvertUserVariableToString(engine));
-			var fieldText = v_FieldText.ConvertUserVariableToString(engine);
-
+			
 			if (terminalObject.TN3270 == null || !terminalObject.TN3270.IsConnected)
 				throw new Exception($"Terminal Instance {v_InstanceName} is not connected.");
 
@@ -102,9 +100,16 @@ namespace OpenBots.Commands.Input
 			List<XMLScreenField> fields = terminalObject.TN3270.CurrentScreenXML.Fields.ToList();
 
 			if (v_Option == "Coordinates")
+            {
+				var mouseX = int.Parse(v_XMousePosition.ConvertUserVariableToString(engine));
+				var mouseY = int.Parse(v_YMousePosition.ConvertUserVariableToString(engine));
 				field = fields.Where(f => (mouseY * 80 + mouseX) >= f.Location.position && (mouseY * 80 + mouseX) < f.Location.position + f.Location.length).FirstOrDefault();
+			}
             else
-				field = fields.Where(f => f.Text.ToLower().Contains(fieldText.ToLower())).FirstOrDefault();
+            {
+				var fieldText = v_FieldText.ConvertUserVariableToString(engine);
+				field = fields.Where(f => f.Text != null && f.Text.ToLower().Contains(fieldText.ToLower())).FirstOrDefault();
+			}
 
 			int fieldIndex = -1;
 			if (field != null)
@@ -120,7 +125,7 @@ namespace OpenBots.Commands.Input
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_InstanceName", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_Option", this, editor));
 
-			((ComboBox)RenderedControls[4]).SelectedIndexChanged += searchOptionComboBox_SelectedValueChanged;
+			((ComboBox)RenderedControls[3]).SelectedIndexChanged += searchOptionComboBox_SelectedValueChanged;
 
 			_coordinateControls = new List<Control>();
 			_coordinateControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_XMousePosition", this, editor));
@@ -155,7 +160,7 @@ namespace OpenBots.Commands.Input
 
 		private void searchOptionComboBox_SelectedValueChanged(object sender, EventArgs e)
 		{
-			if (((ComboBox)RenderedControls[4]).Text == "Coordinates")
+			if (((ComboBox)RenderedControls[3]).Text == "Coordinates")
 			{
 				foreach (var ctrl in _coordinateControls)
 					ctrl.Visible = true;
