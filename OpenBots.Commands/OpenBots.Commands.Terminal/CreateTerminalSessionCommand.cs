@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace OpenBots.Commands.Terminal
@@ -62,6 +63,15 @@ namespace OpenBots.Commands.Terminal
 		[Remarks("")]
 		public string v_UseSsl { get; set; }
 
+		[Required]
+		[DisplayName("Close All Existing Terminal Instances")]
+		[PropertyUISelectionOption("Yes")]
+		[PropertyUISelectionOption("No")]
+		[Description("Indicate whether to close any existing Excel instances before executing Excel Automation.")]
+		[SampleUsage("")]
+		[Remarks("")]
+		public string v_CloseAllInstances { get; set; }
+
 		private OpenEmulator _emulator;
 
 		public CreateTerminalSessionCommand()
@@ -73,6 +83,7 @@ namespace OpenBots.Commands.Terminal
 
 			v_InstanceName = "DefaultTerminal";
 			v_UseSsl = "No";
+			v_CloseAllInstances = "Yes";
 		}
 
 		public override void RunCommand(object sender)
@@ -89,6 +100,14 @@ namespace OpenBots.Commands.Terminal
 			else
 				useSsl = false;
 
+			if (v_CloseAllInstances == "Yes")
+			{
+				var terminalForms = Application.OpenForms.Cast<Form>().Where(f => f is frmTerminal).Select(f => (frmTerminal)f).ToList();
+				terminalForms.ForEach(f => f.CloseForm());
+
+				var terminalInstances = engine.AutomationEngineContext.AppInstances.Where(t => t.Value is OpenEmulator).Select(t => t.Key).ToList();
+				terminalInstances.ForEach(i => i.RemoveAppInstance(engine));
+			}
 
 			if (engine.AutomationEngineContext.ScriptEngine != null)
 			{
@@ -123,13 +142,14 @@ namespace OpenBots.Commands.Terminal
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_Port", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_TerminalType", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_UseSsl", this, editor));
+			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_CloseAllInstances", this, editor));
 
 			return RenderedControls;
 		}
 
 		public override string GetDisplayValue()
 		{
-			return base.GetDisplayValue() + $" [Host '{v_Host} - Port '{v_Port}' - New Instance Name '{v_InstanceName}']";
+			return base.GetDisplayValue() + $" [Host '{v_Host} - Port '{v_Port}' - Close Instances '{v_CloseAllInstances}' - New Instance Name '{v_InstanceName}']";
 		}
 
 		public void LaunchTerminalSession(string host, int port, string terminalType, bool useSsl)

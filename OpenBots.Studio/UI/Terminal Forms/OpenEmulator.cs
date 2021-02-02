@@ -73,6 +73,8 @@ namespace OpenBots.Commands.Terminal.Forms
             {
                 IsRedrawing = true;
 
+                TN3270.WaitTillKeyboardUnlocked(2000);
+
                 Text = TN3270.CurrentScreenXML.Dump();
 
                 SelectAll();
