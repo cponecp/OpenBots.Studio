@@ -1050,9 +1050,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Open3270Library\Open3270Library.csproj">
+    <ProjectReference Include="..\Open3270Library\OpenBots.Open3270Library.csproj">
       <Project>{0c1c4a52-4b1a-49e3-b980-b11c6d8b51ee}</Project>
-      <Name>Open3270Library</Name>
+      <Name>OpenBots.Open3270Library</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenBots.Core\OpenBots.Core.csproj">
       <Project>{6956836d-d2b0-4b7a-b06d-fa3a22b4c4ff}</Project>

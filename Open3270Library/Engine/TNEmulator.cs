@@ -555,7 +555,7 @@ namespace Open3270
 		public string GetLastError()
 		{
 			if (currentConnection == null) throw new TNHostException("TNEmulator is not connected", "There is no currently open TN3270 connection", null);
-			return currentConnection.GetLastError();
+			return currentConnection.LastException;
 		}
 		/// <summary>
 		/// Set field value.
