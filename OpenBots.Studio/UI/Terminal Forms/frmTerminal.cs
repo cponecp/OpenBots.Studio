@@ -27,6 +27,8 @@ namespace OpenBots.Commands.Terminal.Forms
             InitializeComponent();
             OpenEmulator.InitializeComponent();
             Size = new Size(OpenEmulator.Size.Width + 20, OpenEmulator.Height + msTerminal.Height + 50);
+
+            connectToolStripMenuItem_Click(null, null);
         }
 
         public frmTerminal()
@@ -40,6 +42,7 @@ namespace OpenBots.Commands.Terminal.Forms
         {
             OpenEmulator.Connect(_host, _port, _terminalType, _useSsl);
             TN3270 = OpenEmulator.TN3270;
+            Text = $"Terminal (Connected) - Host: {_host} - Port: {_port}";
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -65,6 +68,7 @@ namespace OpenBots.Commands.Terminal.Forms
         {
             OpenEmulator.Disconnect();
             TN3270 = null;
+            Text = "Terminal (Disconnected)";
         }
 
         private void frmTerminal_FormClosing(object sender, FormClosingEventArgs e)
