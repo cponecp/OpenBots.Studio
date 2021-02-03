@@ -64,12 +64,12 @@ namespace OpenBots.Commands.Window
 
 				if (hWnd != IntPtr.Zero) //If found
 					break;
-
+				engine.ReportProgress($"Window '{windowName}' Not Yet Found... " + (endDateTime - DateTime.Now).Minutes + "m, " + (endDateTime - DateTime.Now).Seconds + "s remain");
 				Thread.Sleep(1000);
 			}
 
 			if (hWnd == IntPtr.Zero)
-				throw new Exception("Window was not found in the allowed time!");
+				throw new Exception($"Window '{windowName}' was not found in the allowed time!");
 		}
 
 		public override List<Control> Render(IfrmCommandEditor editor, ICommandControls commandControls)

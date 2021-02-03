@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace OpenBots.Commands.Window
 {
@@ -45,6 +46,14 @@ namespace OpenBots.Commands.Window
 		[Editor("ShowVariableHelper", typeof(UIAdditionalHelperType))]
 		public string v_YWindowSize { get; set; }
 
+		[Required]
+		[DisplayName("Timeout (Seconds)")]
+		[Description("Specify how many seconds to wait before throwing an exception.")]
+		[SampleUsage("30 || {vSeconds}")]
+		[Remarks("")]
+		[Editor("ShowVariableHelper", typeof(UIAdditionalHelperType))]
+		public string v_Timeout { get; set; }
+
 		public ResizeWindowCommand()
 		{
 			CommandName = "ResizeWindowCommand";
@@ -53,6 +62,7 @@ namespace OpenBots.Commands.Window
 			CommandIcon = Resources.command_window;
 
 			v_WindowName = "Current Window";
+			v_Timeout = "30";
 		}
 
 		public override void RunCommand(object sender)
@@ -61,8 +71,28 @@ namespace OpenBots.Commands.Window
 			string windowName = v_WindowName.ConvertUserVariableToString(engine);
 			var variableXSize = v_XWindowSize.ConvertUserVariableToString(engine);
 			var variableYSize = v_YWindowSize.ConvertUserVariableToString(engine);
+			int timeout = Int32.Parse(v_Timeout);
+			DateTime timeToEnd = DateTime.Now.AddSeconds(timeout);
 
-			var targetWindows = User32Functions.FindTargetWindows(windowName);
+			List<IntPtr> targetWindows = new List<IntPtr>();
+			while (timeToEnd >= DateTime.Now)
+			{
+				try
+				{
+					targetWindows = User32Functions.FindTargetWindows(windowName);
+					if (targetWindows.Count == 0)
+					{
+						throw new Exception($"Window '{windowName}' Not Yet Found... ");
+					}
+					break;
+				}
+				catch (Exception)
+				{
+					engine.ReportProgress($"Window '{windowName}' Not Yet Found... " + (timeToEnd - DateTime.Now).Minutes + "m, " + (timeToEnd - DateTime.Now).Seconds + "s remain");
+					Thread.Sleep(500);
+				}
+			}
+			targetWindows = User32Functions.FindTargetWindows(windowName);
 
 			//loop each window and set the window state
 			foreach (var targetedWindow in targetWindows)
@@ -86,7 +116,8 @@ namespace OpenBots.Commands.Window
 			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_WindowName", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_XWindowSize", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_YWindowSize", this, editor));
-	  
+			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_Timeout", this, editor));
+
 			return RenderedControls;
 		}
 

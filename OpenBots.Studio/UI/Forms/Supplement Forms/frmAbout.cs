@@ -40,13 +40,15 @@ namespace OpenBots.UI.Forms.Supplement_Forms
             lblMacAddress.Text = $"Mac Address: {SystemInfo.GetMacAddress()}";
 
             if (EnvironmentSettings.GetEnvironmentVariable() == null)
+            {
                 lblServer.Text = "Server: Agent environment variable not found";
+                return;
+            }
 
             string agentSettingsPath = Path.Combine(EnvironmentSettings.GetEnvironmentVariable(), EnvironmentSettings.SettingsFileName);
 
-            if (agentSettingsPath == null || !File.Exists(agentSettingsPath))
+            if (!File.Exists(agentSettingsPath))
                 lblServer.Text = "Server: Agent settings file not found";
-
             else
             {
                 string agentSettingsText = File.ReadAllText(agentSettingsPath);

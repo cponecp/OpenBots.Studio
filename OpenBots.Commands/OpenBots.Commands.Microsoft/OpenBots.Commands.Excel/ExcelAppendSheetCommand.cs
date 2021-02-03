@@ -52,6 +52,13 @@ namespace OpenBots.Commands.Excel
 
 			var excelObject = v_InstanceName.GetAppInstance(engine);
 			var excelInstance = (Application)excelObject;
+			foreach (Worksheet sheet in excelInstance.Sheets)
+            {
+				if (sheet.Name.Equals(vSheetToAppend))
+                {
+					throw new ArgumentException($"A sheet with the name {vSheetToAppend} already exists.");
+                }
+            }
 			var workSheet = excelInstance.Sheets.Add() as Worksheet;
 			workSheet.Name = vSheetToAppend;
 			workSheet.Select();

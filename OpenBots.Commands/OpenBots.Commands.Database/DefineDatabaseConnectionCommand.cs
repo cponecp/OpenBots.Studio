@@ -3,6 +3,7 @@ using OpenBots.Core.Attributes.PropertyAttributes;
 using OpenBots.Core.Command;
 using OpenBots.Core.Enums;
 using OpenBots.Core.Infrastructure;
+using OpenBots.Core.Model.EngineModel;
 using OpenBots.Core.Properties;
 using OpenBots.Core.UI.Controls;
 using OpenBots.Core.Utilities.CommandUtilities;
@@ -135,7 +136,7 @@ namespace OpenBots.Commands.Database
 			testConnectionControl.Name = "connection_helper";
 			testConnectionControl.CommandImage = Resources.command_database;
 			testConnectionControl.CommandDisplay = "Test Connection";
-			testConnectionControl.Click += (sender, e) => TestConnection(sender, e);
+			testConnectionControl.Click += (sender, e) => TestConnection(sender, e, editor, commandControls);
 
 			RenderedControls.Add(connectionLabel);
 			RenderedControls.AddRange(connectionHelpers);
@@ -192,11 +193,12 @@ namespace OpenBots.Commands.Database
 			return base.GetDisplayValue() + $" [Instance Name '{v_InstanceName}']";
 		}
 
-		private void TestConnection(object sender, EventArgs e)
+		private void TestConnection(object sender, EventArgs e, IfrmCommandEditor editor, ICommandControls commandControls)
 		{
+			
 			try
 			{
-				var engine = (IAutomationEngineInstance)sender;
+				var engine = (IAutomationEngineInstance)commandControls.CreateAutomationEngineInstance(editor.ScriptEngineContext);
 				var oleDBConnection = CreateConnection(engine);
 				oleDBConnection.Open();
 				oleDBConnection.Close();

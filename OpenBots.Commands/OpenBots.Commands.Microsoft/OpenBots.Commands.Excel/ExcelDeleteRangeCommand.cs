@@ -5,6 +5,7 @@ using OpenBots.Core.Enums;
 using OpenBots.Core.Infrastructure;
 using OpenBots.Core.Properties;
 using OpenBots.Core.Utilities.CommonUtilities;
+using OpenBots.Commands.Microsoft.Library;
 
 using System;
 using System.Collections.Generic;
@@ -65,10 +66,12 @@ namespace OpenBots.Commands.Excel
 			string vRange = v_Range.ConvertUserVariableToString(engine);
 			var splitRange = vRange.Split(':');
 			Range cellRange;
+            Range sourceRange = excelSheet.UsedRange;
+
 			//Delete a range of cells
 			try
 			{
-				Range last = excelSheet.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing);
+				var last = excelInstance.GetLastIndexOfNonEmptyCell(sourceRange, sourceRange.Range["A1"]);
 				if (splitRange[1] == "")
 					cellRange = excelSheet.Range[splitRange[0], last];
 				else

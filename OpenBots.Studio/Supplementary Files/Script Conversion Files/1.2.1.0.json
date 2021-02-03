@@ -36,6 +36,9 @@
     ", OpenBots\\.Commands\\.Asset": ", OpenBots.Commands.Server",
     ", OpenBots\\.Commands\\.Credential": ", OpenBots.Commands.Server",
     ", OpenBots\\.Commands\\.QueueItem": ", OpenBots.Commands.Server",
-    ", OpenBots\\.Commands\\.ServerEmail": ", OpenBots.Commands.Server"
+    ", OpenBots\\.Commands\\.ServerEmail": ", OpenBots.Commands.Server",
+
+    "ExcelActivateCellCommand": "ExcelActivateRangeCommand",
+    "Activate Cell": "Activate Range"
   }
 }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace OpenBots.Commands.Window
 {
@@ -46,6 +47,14 @@ namespace OpenBots.Commands.Window
 		[Editor("ShowMouseCaptureHelper", typeof(UIAdditionalHelperType))]
 		public string v_YMousePosition { get; set; }
 
+		[Required]
+		[DisplayName("Timeout (Seconds)")]
+		[Description("Specify how many seconds to wait before throwing an exception.")]
+		[SampleUsage("30 || {vSeconds}")]
+		[Remarks("")]
+		[Editor("ShowVariableHelper", typeof(UIAdditionalHelperType))]
+		public string v_Timeout { get; set; }
+
 		public MoveWindowCommand()
 		{
 			CommandName = "MoveWindowCommand";
@@ -57,12 +66,33 @@ namespace OpenBots.Commands.Window
 			v_WindowName = "Current Window";
 			v_XMousePosition = "0";
 			v_YMousePosition = "0";
+			v_Timeout = "30";
 		}
 
 		public override void RunCommand(object sender)
 		{
 			var engine = (IAutomationEngineInstance)sender;
 			string windowName = v_WindowName.ConvertUserVariableToString(engine);
+			int timeout = Int32.Parse(v_Timeout);
+			DateTime timeToEnd = DateTime.Now.AddSeconds(timeout);
+			while (timeToEnd >= DateTime.Now)
+            {
+				try
+				{
+					List<IntPtr> targetWindows = User32Functions.FindTargetWindows(windowName);
+					if (targetWindows.Count == 0)
+					{
+						throw new Exception($"Window '{windowName}' Not Yet Found... ");
+					}
+					break;
+				}
+				catch (Exception)
+				{
+					engine.ReportProgress($"Window '{windowName}' Not Yet Found... " + (timeToEnd - DateTime.Now).Minutes + "m, " + (timeToEnd - DateTime.Now).Seconds + "s remain");
+					Thread.Sleep(500);
+				}
+			}
+
 			var variableXPosition = v_XMousePosition.ConvertUserVariableToString(engine);
 			var variableYPosition = v_YMousePosition.ConvertUserVariableToString(engine);
 
@@ -76,6 +106,7 @@ namespace OpenBots.Commands.Window
 			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_WindowName", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_XMousePosition", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_YMousePosition", this, editor));
+			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_Timeout", this, editor));
 
 			return RenderedControls;
 		}

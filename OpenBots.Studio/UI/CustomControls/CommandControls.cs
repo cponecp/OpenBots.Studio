@@ -846,7 +846,8 @@ namespace OpenBots.UI.CustomControls
                     UIPictureBox targetPictureBox = (UIPictureBox)inputBox.Tag;
                     targetPictureBox.Image = imageCaptureForm.UserSelectedBitmap;
                     var convertedImage = CommonMethods.ImageToBase64(imageCaptureForm.UserSelectedBitmap);
-                    targetPictureBox.EncodedImage = convertedImage;                   
+                    targetPictureBox.EncodedImage = convertedImage;
+                    targetPictureBox.DataBindings[0].WriteValue();
                 }
 
                 imageCaptureForm.Dispose();

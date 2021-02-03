@@ -31,9 +31,18 @@ namespace OpenBots.Commands.DataTable
 		public string v_DataTable { get; set; }
 
 		[Required]
-		[DisplayName("Removal Tuple")]
-		[Description("Enter a tuple containing the column name and item you would like to remove.")]
-		[SampleUsage("(ColumnName1,Item1),(ColumnName2,Item2) || ({vColumn1},{vItem1}),({vCloumn2},{vItem2}) || {vRemovalTuple}")]
+		[DisplayName("Remove Option")]
+		[PropertyUISelectionOption("Tuple")]
+		[PropertyUISelectionOption("Index")]
+		[Description("Indicate whether DataRow(s) will be deleted by index or tuple.")]
+		[SampleUsage("")]
+		[Remarks("")]
+		public string v_RemoveOption { get; set; }
+
+		[Required]
+		[DisplayName("Tuple/Index")]
+		[Description("Enter a tuple containing the column name and item you would like to remove or enter the index of DataRow you want to remove.")]
+		[SampleUsage("(ColumnName1,Item1),(ColumnName2,Item2) || ({vColumn1},{vItem1}),({vCloumn2},{vItem2}) || {vTuple} || 0 || {vIndex}")]
 		[Remarks("")]
 		[Editor("ShowVariableHelper", typeof(UIAdditionalHelperType))]
 		public string v_SearchItem { get; set; }
@@ -55,6 +64,7 @@ namespace OpenBots.Commands.DataTable
 			CommandIcon = Resources.command_spreadsheet;
 
 			v_AndOr = "And";
+			v_RemoveOption = "Tuple";
 		}
 
 		public override void RunCommand(object sender)
@@ -63,82 +73,93 @@ namespace OpenBots.Commands.DataTable
 			var vSearchItem = v_SearchItem.ConvertUserVariableToString(engine);
 
 			OBDataTable Dt = (OBDataTable)v_DataTable.ConvertUserVariableToObject(engine);
-			var t = new List<Tuple<string, string>>();
-			var listPairs = vSearchItem.Split(')');
-			int i = 0;
 
-			listPairs = listPairs.Take(listPairs.Count() - 1).ToArray();
-			foreach (string item in listPairs)
-			{
-				string temp;
-				temp = item.Trim('(', '"');
-				var tempList = temp.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-				for (int z = 0; z < tempList.Count; z++)
-				{
-					tempList[z] = tempList[z].Trim('(');
-				}
-				t.Insert(i, Tuple.Create(tempList[0], tempList[1]));
-				i++;
+			if(v_RemoveOption == "Index")
+            {
+                Dt.Rows[Convert.ToInt32(vSearchItem)].Delete();
+				Dt.AcceptChanges();
+				Dt.StoreInUserVariable(engine, v_DataTable);
 			}
+            else
+            {
+				var t = new List<Tuple<string, string>>();
+				var listPairs = vSearchItem.Split(')');
+				int i = 0;
 
-			List<DataRow> listrows = Dt.AsEnumerable().ToList();
-			if (v_AndOr == "Or")
-			{
-				List<DataRow> templist = new List<DataRow>();
-				//for each filter
-				foreach (Tuple<string, string> tuple in t)
+				listPairs = listPairs.Take(listPairs.Count() - 1).ToArray();
+				foreach (string item in listPairs)
 				{
-					//for each datarow
-					foreach (DataRow item in listrows)
+					string temp;
+					temp = item.Trim('(', '"');
+					var tempList = temp.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+					for (int z = 0; z < tempList.Count; z++)
 					{
-						if (item[tuple.Item1] != null)
+						tempList[z] = tempList[z].Trim('(');
+					}
+					t.Insert(i, Tuple.Create(tempList[0], tempList[1]));
+					i++;
+				}
+
+				List<DataRow> listrows = Dt.AsEnumerable().ToList();
+				if (v_AndOr == "Or")
+				{
+					List<DataRow> templist = new List<DataRow>();
+					//for each filter
+					foreach (Tuple<string, string> tuple in t)
+					{
+						//for each datarow
+						foreach (DataRow item in listrows)
 						{
-							if (item[tuple.Item1].ToString() == tuple.Item2.ToString())
+							if (item[tuple.Item1] != null)
 							{
-								//add to list if filter matches
-								if (!templist.Contains(item))
-									templist.Add(item);
+								if (item[tuple.Item1].ToString() == tuple.Item2.ToString())
+								{
+									//add to list if filter matches
+									if (!templist.Contains(item))
+										templist.Add(item);
+								}
 							}
 						}
 					}
-				}
-				foreach (DataRow item in templist)
-				{
-					Dt.Rows.Remove(item);
-				}
-				Dt.AcceptChanges();
-				Dt.StoreInUserVariable(engine, v_DataTable);
-			}
-
-			//If And operation is checked
-			if (v_AndOr == "And")
-			{
-				List<DataRow> templist = new List<DataRow>(listrows);
-
-				//for each tuple
-				foreach (Tuple<string, string> tuple in t)
-				{
-					//for each datarow
-					foreach (DataRow drow in Dt.AsEnumerable())
+					foreach (DataRow item in templist)
 					{
-						if (drow[tuple.Item1].ToString() != tuple.Item2)
+						Dt.Rows.Remove(item);
+					}
+					Dt.AcceptChanges();
+					Dt.StoreInUserVariable(engine, v_DataTable);
+				}
+
+				//If And operation is checked
+				if (v_AndOr == "And")
+				{
+					List<DataRow> templist = new List<DataRow>(listrows);
+
+					//for each tuple
+					foreach (Tuple<string, string> tuple in t)
+					{
+						//for each datarow
+						foreach (DataRow drow in Dt.AsEnumerable())
 						{
-							//remove from list if filter matches
-							templist.Remove(drow);
+							if (drow[tuple.Item1].ToString() != tuple.Item2)
+							{
+								//remove from list if filter matches
+								templist.Remove(drow);
+							}
 						}
 					}
-				}
 
-				foreach (DataRow item in templist)
-				{
-					Dt.Rows.Remove(item);
-				}
-				Dt.AcceptChanges();
+					foreach (DataRow item in templist)
+					{
+						Dt.Rows.Remove(item);
+					}
+					Dt.AcceptChanges();
 
-				//Assigns Datatable to newly updated Datatable
-				Dt.StoreInUserVariable(engine, v_DataTable);
+					//Assigns Datatable to newly updated Datatable
+					Dt.StoreInUserVariable(engine, v_DataTable);
+				}
 			}
+			
 		}
 
 		public override List<Control> Render(IfrmCommandEditor editor, ICommandControls commandControls)
@@ -146,6 +167,7 @@ namespace OpenBots.Commands.DataTable
 			base.Render(editor, commandControls);
 
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_DataTable", this, editor));
+			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_RemoveOption", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_SearchItem", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_AndOr", this, editor));
 

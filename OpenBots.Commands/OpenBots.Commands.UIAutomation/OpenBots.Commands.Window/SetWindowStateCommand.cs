@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace OpenBots.Commands.Window
 {
@@ -38,6 +39,14 @@ namespace OpenBots.Commands.Window
 		[Remarks("")]
 		public string v_WindowState { get; set; }
 
+		[Required]
+		[DisplayName("Timeout (Seconds)")]
+		[Description("Specify how many seconds to wait before throwing an exception.")]
+		[SampleUsage("30 || {vSeconds}")]
+		[Remarks("")]
+		[Editor("ShowVariableHelper", typeof(UIAdditionalHelperType))]
+		public string v_Timeout { get; set; }
+
 		public SetWindowStateCommand()
 		{
 			CommandName = "SetWindowStateCommand";
@@ -48,6 +57,7 @@ namespace OpenBots.Commands.Window
 
 			v_WindowName = "Current Window";
 			v_WindowState = "Maximize";
+			v_Timeout = "30";
 		}
 
 		public override void RunCommand(object sender)
@@ -55,8 +65,28 @@ namespace OpenBots.Commands.Window
 			var engine = (IAutomationEngineInstance)sender;
 			//convert window name
 			string windowName = v_WindowName.ConvertUserVariableToString(engine);
+			int timeout = Int32.Parse(v_Timeout);
+			DateTime timeToEnd = DateTime.Now.AddSeconds(timeout);
 
-			var targetWindows = User32Functions.FindTargetWindows(windowName);
+			List<IntPtr> targetWindows = new List<IntPtr>();
+			while (timeToEnd >= DateTime.Now)
+			{
+				try
+				{
+					targetWindows = User32Functions.FindTargetWindows(windowName);
+					if (targetWindows.Count == 0)
+					{
+						throw new Exception($"Window '{windowName}' Not Yet Found... ");
+					}
+					break;
+				}
+				catch (Exception)
+				{
+					engine.ReportProgress($"Window '{windowName}' Not Yet Found... " + (timeToEnd - DateTime.Now).Minutes + "m, " + (timeToEnd - DateTime.Now).Seconds + "s remain");
+					Thread.Sleep(500);
+				}
+			}
+			targetWindows = User32Functions.FindTargetWindows(windowName);
 
 			//loop each window and set the window state
 			foreach (var targetedWindow in targetWindows)
@@ -90,6 +120,7 @@ namespace OpenBots.Commands.Window
 
 			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_WindowName", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_WindowState", this, editor));
+			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_Timeout", this, editor));
 
 			return RenderedControls;
 		}

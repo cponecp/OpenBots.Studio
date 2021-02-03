@@ -18,7 +18,7 @@ namespace OpenBots.Core.Server.User
 
         public static string GetEnvironmentVariable()
         {
-            return Environment.GetEnvironmentVariable(EnvironmentVariableName, EnvironmentVariableTarget.Machine);
+            return Environment.GetEnvironmentVariable(EnvironmentVariableName, EnvironmentVariableTarget.User);
         }
 
         public static Dictionary<string, string> GetAgentSettings()

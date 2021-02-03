@@ -68,7 +68,16 @@ namespace OpenBots.Commands.Outlook
 		public string v_SaveMessagesAndAttachments { get; set; }
 
 		[Required]
-		[DisplayName("Output MailItem Directory")]   
+		[DisplayName("Include Embedded Images")]
+		[PropertyUISelectionOption("Yes")]
+		[PropertyUISelectionOption("No")]
+		[Description("Specify whether to consider images in body as attachments")]
+		[SampleUsage("")]
+		[Remarks("")]
+		public string v_IncludeEmbeddedImagesAsAttachments { get; set; }
+
+		[Required]
+		[DisplayName("Output MailItem Directory")]
 		[Description("Enter or Select the path of the directory to store the messages in.")]
 		[SampleUsage(@"C:\temp\myfolder || {vFolderPath} || {ProjectPath}\myFolder")]
 		[Remarks("This input is optional and will only be used if *Save MailItems and Attachments* is set to **Yes**.")]
@@ -77,7 +86,7 @@ namespace OpenBots.Commands.Outlook
 		public string v_MessageDirectory { get; set; }
 
 		[Required]
-		[DisplayName("Output Attachment Directory")]      
+		[DisplayName("Output Attachment Directory")]
 		[Description("Enter or Select the path to the directory to store the attachments in.")]
 		[SampleUsage(@"C:\temp\myfolder\attachments || {vFolderPath} || {ProjectPath}\myFolder\attachments")]
 		[Remarks("This input is optional and will only be used if *Save MailItems and Attachments* is set to **Yes**.")]
@@ -108,6 +117,7 @@ namespace OpenBots.Commands.Outlook
 			v_GetUnreadOnly = "No";
 			v_MarkAsRead = "Yes";
 			v_SaveMessagesAndAttachments = "No";
+			v_IncludeEmbeddedImagesAsAttachments = "No";
 		}
 
 		public override void RunCommand(object sender)
@@ -139,11 +149,11 @@ namespace OpenBots.Commands.Outlook
 					{
 						filteredItems = userFolder.Items.Restrict(vFilter);
 					}
-					catch(System.Exception)
+					catch (System.Exception)
 					{
 						throw new InvalidDataException("Outlook Filter is not valid");
 					}
-				}                   
+				}
 				else
 					filteredItems = userFolder.Items;
 
@@ -152,7 +162,8 @@ namespace OpenBots.Commands.Outlook
 				foreach (object _obj in filteredItems)
 				{
 					if (_obj is MailItem)
-					{ 
+					{
+
 						MailItem tempMail = (MailItem)_obj;
 						if (v_GetUnreadOnly == "Yes")
 						{
@@ -185,6 +196,7 @@ namespace OpenBots.Commands.Outlook
 			((ComboBox)RenderedControls[11]).SelectedIndexChanged += SaveMailItemsComboBox_SelectedValueChanged;
 
 			_savingControls = new List<Control>();
+			_savingControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_IncludeEmbeddedImagesAsAttachments", this, editor));
 			_savingControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_MessageDirectory", this, editor));
 			_savingControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_AttachmentDirectory", this, editor));
 
@@ -218,22 +230,26 @@ namespace OpenBots.Commands.Outlook
 					string mailFileName = string.Join("_", mail.Subject.Split(Path.GetInvalidFileNameChars()));
 					mail.SaveAs(Path.Combine(msgDirectory, mailFileName + ".msg"));
 				}
-					
+
 				if (Directory.Exists(attDirectory))
 				{
-					foreach (Attachment attachment in mail.Attachments)
-					{
-						var flags = attachment.PropertyAccessor.GetProperty("http://schemas.microsoft.com/mapi/proptag/0x37140003");
-
-						//To ignore embedded attachments
-						if (flags.ToString() != "4")
+					if (v_IncludeEmbeddedImagesAsAttachments.Equals("Yes")) {
+						foreach (Attachment attachment in mail.Attachments)
 						{
-							//If an rtF mail attachment comes here and the embeded image is treated as attachment then Type value is 6 and ignore it
-							if ((int)attachment.Type != 6 && !string.IsNullOrEmpty(new FileInfo(attachment.FileName).Extension))
+							attachment.SaveAsFile(Path.Combine(attDirectory, attachment.FileName));
+						}
+					}
+					else
+					{
+						foreach (Attachment attachment in mail.Attachments)
+						{
+							var flags = mail.HTMLBody.Contains(attachment.FileName);
+
+							if (!flags)
 							{
 								attachment.SaveAsFile(Path.Combine(attDirectory, attachment.FileName));
 							}
-						}					
+						}
 					}
 				}
 			}

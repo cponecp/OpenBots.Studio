@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace OpenBots.Commands.Window
 {
@@ -28,20 +29,50 @@ namespace OpenBots.Commands.Window
 		[Editor("CaptureWindowHelper", typeof(UIAdditionalHelperType))]
 		public string v_WindowName { get; set; }
 
+		[Required]
+		[DisplayName("Timeout (Seconds)")]
+		[Description("Specify how many seconds to wait before throwing an exception.")]
+		[SampleUsage("30 || {vSeconds}")]
+		[Remarks("")]
+		[Editor("ShowVariableHelper", typeof(UIAdditionalHelperType))]
+		public string v_Timeout { get; set; }
+
 		public ActivateWindowCommand()
 		{
 			CommandName = "ActivateWindowCommand";
 			SelectionName = "Activate Window";
 			CommandEnabled = true;
 			CommandIcon = Resources.command_window;
+			v_Timeout = "30";
 		}
 
 		public override void RunCommand(object sender)
 		{
 			var engine = (IAutomationEngineInstance)sender;
 			string windowName = v_WindowName.ConvertUserVariableToString(engine);
-
-			User32Functions.ActivateWindow(windowName);
+			int timeout = Int32.Parse(v_Timeout);
+			DateTime timeToEnd = DateTime.Now.AddSeconds(timeout);
+			while (timeToEnd >= DateTime.Now)
+            {
+                try
+                {
+					User32Functions.ActivateWindow(windowName);
+					if (!User32Functions.GetActiveWindowTitle().Equals(windowName))
+					{
+						throw new Exception($"Window '{windowName}' Not Yet Found... ");
+					}
+					break;
+				}
+				catch (Exception)
+                {
+					engine.ReportProgress($"Window '{windowName}' Not Yet Found... "+ (timeToEnd - DateTime.Now).Minutes + "m, " + (timeToEnd - DateTime.Now).Seconds + "s remain");
+					Thread.Sleep(500);
+				}
+            }
+			if (!User32Functions.GetActiveWindowTitle().Equals(windowName))
+			{
+				throw new Exception($"Window '{windowName}' Not Found");
+			}
 		}
 
 		public override List<Control> Render(IfrmCommandEditor editor, ICommandControls commandControls)
@@ -49,6 +80,7 @@ namespace OpenBots.Commands.Window
 			base.Render(editor, commandControls);
 
 			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_WindowName", this, editor));
+			RenderedControls.AddRange(commandControls.CreateDefaultWindowControlGroupFor("v_Timeout", this, editor));
 
 			return RenderedControls;
 		}     

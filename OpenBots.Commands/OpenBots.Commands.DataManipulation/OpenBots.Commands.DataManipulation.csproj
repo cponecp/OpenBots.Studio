@@ -111,8 +111,10 @@
     <Compile Include="OpenBots.Commands.DataTable\GetDataRowCommand.cs" />
     <Compile Include="OpenBots.Commands.DataTable\GetDataRowCountCommand.cs" />
     <Compile Include="OpenBots.Commands.DataTable\GetDataRowValueCommand.cs" />
+    <Compile Include="OpenBots.Commands.DataTable\GroupDataTableCommand.cs" />
     <Compile Include="OpenBots.Commands.DataTable\MergeDataTableCommand.cs" />
     <Compile Include="OpenBots.Commands.DataTable\RemoveDataRowCommand.cs" />
+    <Compile Include="OpenBots.Commands.DataTable\SortDataTableCommand.cs" />
     <Compile Include="OpenBots.Commands.DataTable\UpdateDataRowValueCommand.cs" />
     <Compile Include="OpenBots.Commands.Data\CreateDateTimeCommand.cs" />
     <Compile Include="OpenBots.Commands.Data\DateCalculationCommand.cs" />

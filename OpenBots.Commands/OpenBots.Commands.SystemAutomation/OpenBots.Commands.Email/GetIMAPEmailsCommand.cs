@@ -2,6 +2,7 @@
 using MailKit.Net.Imap;
 using MailKit.Search;
 using MimeKit;
+using Newtonsoft.Json;
 using OpenBots.Core.Attributes.PropertyAttributes;
 using OpenBots.Core.Command;
 using OpenBots.Core.Enums;
@@ -104,6 +105,15 @@ namespace OpenBots.Commands.Email
 		public string v_IMAPSaveMessagesAndAttachments { get; set; }
 
 		[Required]
+		[DisplayName("Include Embedded Images")]
+		[PropertyUISelectionOption("Yes")]
+		[PropertyUISelectionOption("No")]
+		[Description("Specify whether to consider images in body as attachments")]
+		[SampleUsage("")]
+		[Remarks("")]
+		public string v_IncludeEmbeddedImagesAsAttachments { get; set; }
+
+		[Required]
 		[DisplayName("Output MimeMessage Directory")]
 		[Description("Enter or Select the path of the directory to store the messages in.")]
 		[SampleUsage(@"C:\temp\myfolder || {vFolderPath} || {ProjectPath}\myFolder")]
@@ -129,6 +139,10 @@ namespace OpenBots.Commands.Email
 		[Remarks("Variables not pre-defined in the Variable Manager will be automatically generated at runtime.")]
 		public string v_OutputUserVariableName { get; set; }
 
+		[JsonIgnore]
+		[Browsable(false)]
+		private List<Control> _savingControls;
+
 		public GetIMAPEmailsCommand()
 		{
 			CommandName = "GetIMAPEmailsCommand";
@@ -140,6 +154,7 @@ namespace OpenBots.Commands.Email
 			v_IMAPGetUnreadOnly = "No";
 			v_IMAPMarkAsRead = "Yes";
 			v_IMAPSaveMessagesAndAttachments = "No";
+			v_IncludeEmbeddedImagesAsAttachments = "No";
 		}
 
 		public override void RunCommand(object sender)
@@ -240,9 +255,18 @@ namespace OpenBots.Commands.Email
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_IMAPGetUnreadOnly", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_IMAPMarkAsRead", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_IMAPSaveMessagesAndAttachments", this, editor));
-			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_IMAPMessageDirectory", this, editor));
-			RenderedControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_IMAPAttachmentDirectory", this, editor));
 			RenderedControls.AddRange(commandControls.CreateDefaultOutputGroupFor("v_OutputUserVariableName", this, editor));
+			((ComboBox)RenderedControls[23]).SelectedIndexChanged += SaveMailItemsComboBox_SelectedValueChanged;
+
+			_savingControls = new List<Control>();
+			_savingControls.AddRange(commandControls.CreateDefaultDropdownGroupFor("v_IncludeEmbeddedImagesAsAttachments", this, editor));
+			_savingControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_IMAPMessageDirectory", this, editor));
+			_savingControls.AddRange(commandControls.CreateDefaultInputGroupFor("v_IMAPAttachmentDirectory", this, editor));
+
+			foreach (var ctrl in _savingControls)
+				ctrl.Visible = false;
+
+			RenderedControls.AddRange(_savingControls);
 
 			return RenderedControls;
 		}
@@ -280,29 +304,78 @@ namespace OpenBots.Commands.Email
 
 			if (Directory.Exists(attDirectory))
 			{
-				foreach (var attachment in message.Attachments)
-				{
-					if (attachment is MessagePart)
+				if (v_IncludeEmbeddedImagesAsAttachments.Equals("Yes")) {
+					foreach (var attachment in message.Attachments)
 					{
-						var fileName = attachment.ContentDisposition?.FileName;
-						var rfc822 = (MessagePart)attachment;
+						if (attachment is MessagePart)
+						{
+							var fileName = attachment.ContentDisposition?.FileName;
+							var rfc822 = (MessagePart)attachment;
 
-						if (string.IsNullOrEmpty(fileName))
-							fileName = "attached-message.eml";
+							if (string.IsNullOrEmpty(fileName))
+								fileName = "attached-message.eml";
 
-						using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
-							rfc822.Message.WriteTo(stream);
+							using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
+								rfc822.Message.WriteTo(stream);
+						}
+						else
+						{
+							var part = (MimePart)attachment;
+							var fileName = part.FileName;
+
+							using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
+								part.Content.DecodeTo(stream);
+						}
 					}
-					else
+				}
+				else
+                {
+					foreach (var attachment in message.Attachments)
 					{
-						var part = (MimePart)attachment;
-						var fileName = part.FileName;
+						if (attachment is MessagePart)
+						{
+							var fileName = attachment.ContentDisposition?.FileName;
+							var rfc822 = (MessagePart)attachment;
 
-						using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
-							part.Content.DecodeTo(stream);
+							if (string.IsNullOrEmpty(fileName))
+								fileName = "attached-message.eml";
+							if (!message.HtmlBody.Contains(fileName))
+							{
+								using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
+									rfc822.Message.WriteTo(stream);
+							}
+						}
+						else
+						{
+							var part = (MimePart)attachment;
+							var fileName = part.FileName;
+							if (!message.HtmlBody.Contains(fileName))
+							{
+								using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
+									part.Content.DecodeTo(stream);
+							}
+						}
 					}
 				}
 			}           
+		}
+
+		private void SaveMailItemsComboBox_SelectedValueChanged(object sender, EventArgs e)
+		{
+			if (((ComboBox)RenderedControls[23]).Text == "Yes")
+			{
+				foreach (var ctrl in _savingControls)
+					ctrl.Visible = true;
+			}
+			else
+			{
+				foreach (var ctrl in _savingControls)
+				{
+					ctrl.Visible = false;
+					if (ctrl is TextBox)
+						((TextBox)ctrl).Clear();
+				}
+			}
 		}
 	}
 }

@@ -5,6 +5,7 @@ using OpenBots.Core.Enums;
 using OpenBots.Core.Infrastructure;
 using OpenBots.Core.Properties;
 using OpenBots.Core.Utilities.CommonUtilities;
+using OpenBots.Commands.Microsoft.Library;
 
 using System;
 using System.Collections.Generic;
@@ -95,7 +96,7 @@ namespace OpenBots.Commands.Excel
 
 			if (splitRange[1] == "")
             {
-				var cell = GetLastIndexOfNonEmptyCell(excelInstance, sourceRange, sourceRange.Range["A1"]);
+				var cell = excelInstance.GetLastIndexOfNonEmptyCell(sourceRange, sourceRange.Range["A1"]);
 				if (cell == "")
 					throw new Exception("No data found in sheet.");
 				cellRange = excelSheet.Range[splitRange[0], cell];
@@ -167,20 +168,6 @@ namespace OpenBots.Commands.Excel
 			RenderedControls.AddRange(commandControls.CreateDefaultOutputGroupFor("v_OutputUserVariableName", this, editor));
 
 			return RenderedControls;
-		}
-
-		private static string GetLastIndexOfNonEmptyCell(Application app, Range sourceRange, Range startPoint)
-		{
-			Range rng = sourceRange.Cells.Find(
-				What: "*",
-				After: startPoint,
-				LookIn: XlFindLookIn.xlFormulas,
-				LookAt: XlLookAt.xlPart,
-				SearchDirection: XlSearchDirection.xlPrevious,
-				MatchCase: false);
-			if (rng == null)
-				return "";
-			return rng.Address[false, false, XlReferenceStyle.xlA1, Type.Missing, Type.Missing];
 		}
 
 		public override string GetDisplayValue()

@@ -61,7 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OpenBots.Commands.Excel\ExcelActivateCellCommand.cs" />
+    <Compile Include="Library\ExcelHelper.cs" />
+    <Compile Include="OpenBots.Commands.Excel\ExcelActivateRangeCommand.cs" />
     <Compile Include="OpenBots.Commands.Excel\ExcelActivateSheetCommand.cs" />
     <Compile Include="OpenBots.Commands.Excel\ExcelAppendCellCommand.cs" />
     <Compile Include="OpenBots.Commands.Excel\ExcelAppendRowCommand.cs" />
@@ -115,7 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Forms\" />
-    <Folder Include="Library\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

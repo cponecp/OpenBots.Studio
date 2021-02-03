@@ -2,6 +2,7 @@
 using OpenBots.Core.Utilities.CommonUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -144,6 +145,46 @@ namespace OpenBots.UI.Forms.Sequence_Forms
                     if (row.Cells.Count == 3 && row.Cells[2].Value != null && (ScriptArgumentDirection)row.Cells[2].Value == ScriptArgumentDirection.Out)
                         row.Cells[1].ReadOnly = true;
                 }
+            }
+            catch (Exception ex)
+            {
+                //datagridview event failure
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void dgvVariables_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                DataGridView dgv = (DataGridView)sender;
+
+                var dgvBindingList = (BindingList<ScriptVariable>)dgv.DataSource;
+                var nullScriptVariable = dgvBindingList.Where(x => string.IsNullOrEmpty(x.VariableName)).FirstOrDefault();
+
+                if (nullScriptVariable != null && dgvBindingList.Count > 1)
+                    dgvBindingList.Remove(nullScriptVariable);
+
+            }
+            catch (Exception ex)
+            {
+                //datagridview event failure
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void dgvArguments_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                DataGridView dgv = (DataGridView)sender;
+
+                var dgvBindingList = (BindingList<ScriptArgument>)dgv.DataSource;
+                var nullScriptVariable = dgvBindingList.Where(x => string.IsNullOrEmpty(x.ArgumentName)).FirstOrDefault();
+
+                if (nullScriptVariable != null && dgvBindingList.Count > 1)
+                    dgvBindingList.Remove(nullScriptVariable);
+
             }
             catch (Exception ex)
             {
