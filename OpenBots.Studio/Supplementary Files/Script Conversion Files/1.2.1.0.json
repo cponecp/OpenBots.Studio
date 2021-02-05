@@ -1,7 +1,7 @@
 {
   "Replace": {
     "1\\.2\\.1\\.0": "1.3.0.0",
-    ", OpenBots\\.Commands\\.Data": ", OpenBots.Commands.DataManipulation",
+    ", OpenBots\\.Commands\\.Data\"": ", OpenBots.Commands.DataManipulation\"",
     ", OpenBots\\.Commands\\.DataTable": ", OpenBots.Commands.DataManipulation",
     ", OpenBots\\.Commands\\.Dictionary": ", OpenBots.Commands.DataManipulation",
     ", OpenBots\\.Commands\\.List": ", OpenBots.Commands.DataManipulation",
