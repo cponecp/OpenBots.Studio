@@ -90,6 +90,7 @@
     <Compile Include="Library\EventArgs\LoginResultEventArgs.cs" />
     <Compile Include="OpenBots.Commands.Email\DeleteIMAPEmailCommand.cs" />
     <Compile Include="OpenBots.Commands.Email\ForwardSMTPEmailCommand.cs" />
+    <Compile Include="OpenBots.Commands.Email\GetIMAPEmailAttachmentsCommand.cs" />
     <Compile Include="OpenBots.Commands.Email\GetIMAPEmailsCommand.cs" />
     <Compile Include="OpenBots.Commands.Email\GetMimeMessagePropertyCommand.cs" />
     <Compile Include="OpenBots.Commands.Email\MoveCopyIMAPEmailCommand.cs" />

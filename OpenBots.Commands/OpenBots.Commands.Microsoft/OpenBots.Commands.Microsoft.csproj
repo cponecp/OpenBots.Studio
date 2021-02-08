@@ -87,6 +87,7 @@
     <Compile Include="OpenBots.Commands.Excel\ExcelWriteRowCommand.cs" />
     <Compile Include="OpenBots.Commands.Outlook\DeleteOutlookEmailCommand.cs" />
     <Compile Include="OpenBots.Commands.Outlook\ForwardOutlookEmailCommand.cs" />
+    <Compile Include="OpenBots.Commands.Outlook\GetOutlookEmailAttachmentsCommand.cs" />
     <Compile Include="OpenBots.Commands.Outlook\GetOutlookEmailPropertyCommand.cs" />
     <Compile Include="OpenBots.Commands.Outlook\GetOutlookEmailsCommand.cs" />
     <Compile Include="OpenBots.Commands.Outlook\MoveCopyOutlookEmailCommand.cs" />

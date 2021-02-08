@@ -71,7 +71,7 @@ namespace OpenBots.Commands.Outlook
 		[DisplayName("Include Embedded Images")]
 		[PropertyUISelectionOption("Yes")]
 		[PropertyUISelectionOption("No")]
-		[Description("Specify whether to consider images in body as attachments")]
+		[Description("Specify whether to consider images in body as attachments.")]
 		[SampleUsage("")]
 		[Remarks("")]
 		public string v_IncludeEmbeddedImagesAsAttachments { get; set; }

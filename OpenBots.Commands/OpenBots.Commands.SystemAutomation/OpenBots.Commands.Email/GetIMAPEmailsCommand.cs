@@ -108,7 +108,7 @@ namespace OpenBots.Commands.Email
 		[DisplayName("Include Embedded Images")]
 		[PropertyUISelectionOption("Yes")]
 		[PropertyUISelectionOption("No")]
-		[Description("Specify whether to consider images in body as attachments")]
+		[Description("Specify whether to consider images in body as attachments.")]
 		[SampleUsage("")]
 		[Remarks("")]
 		public string v_IncludeEmbeddedImagesAsAttachments { get; set; }
@@ -304,56 +304,30 @@ namespace OpenBots.Commands.Email
 
 			if (Directory.Exists(attDirectory))
 			{
-				if (v_IncludeEmbeddedImagesAsAttachments.Equals("Yes")) {
-					foreach (var attachment in message.Attachments)
+				
+				foreach (var attachment in message.Attachments)
+				{
+					if (attachment is MessagePart)
 					{
-						if (attachment is MessagePart)
+						var fileName = attachment.ContentDisposition?.FileName;
+						var rfc822 = (MessagePart)attachment;
+
+						if (string.IsNullOrEmpty(fileName))
+							fileName = "attached-message.eml";
+						if (!message.HtmlBody.Contains(fileName) || v_IncludeEmbeddedImagesAsAttachments.Equals("Yes"))
 						{
-							var fileName = attachment.ContentDisposition?.FileName;
-							var rfc822 = (MessagePart)attachment;
-
-							if (string.IsNullOrEmpty(fileName))
-								fileName = "attached-message.eml";
-
 							using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
 								rfc822.Message.WriteTo(stream);
 						}
-						else
+					}
+					else
+					{
+						var part = (MimePart)attachment;
+						var fileName = part.FileName;
+						if (!message.HtmlBody.Contains(fileName) || v_IncludeEmbeddedImagesAsAttachments.Equals("Yes"))
 						{
-							var part = (MimePart)attachment;
-							var fileName = part.FileName;
-
 							using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
 								part.Content.DecodeTo(stream);
-						}
-					}
-				}
-				else
-                {
-					foreach (var attachment in message.Attachments)
-					{
-						if (attachment is MessagePart)
-						{
-							var fileName = attachment.ContentDisposition?.FileName;
-							var rfc822 = (MessagePart)attachment;
-
-							if (string.IsNullOrEmpty(fileName))
-								fileName = "attached-message.eml";
-							if (!message.HtmlBody.Contains(fileName))
-							{
-								using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
-									rfc822.Message.WriteTo(stream);
-							}
-						}
-						else
-						{
-							var part = (MimePart)attachment;
-							var fileName = part.FileName;
-							if (!message.HtmlBody.Contains(fileName))
-							{
-								using (var stream = OBFile.Create(Path.Combine(attDirectory, fileName)))
-									part.Content.DecodeTo(stream);
-							}
 						}
 					}
 				}
