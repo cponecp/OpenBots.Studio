@@ -455,21 +455,27 @@ namespace OpenBots.Engine
                 string errorMessage = $"Source: {error.SourceFile}, Line: {error.LineNumber} {parentCommand.GetDisplayValue()}, " +
                         $"Exception Type: {error.ErrorType}, Exception Message: {error.ErrorMessage}";
 
-                if (parentCommand.v_ContinueOnError)
-                {
-                    ErrorHandlingAction = "Continue Processing";
-                }
+                if (!parentCommand.v_ErrorHandling.Equals("None"))
+                    ErrorHandlingAction = parentCommand.v_ErrorHandling;
+                else
+                    ErrorHandlingAction = string.Empty;
+                
+
 
                 //error occuured so decide what user selected
                 if (ErrorHandlingAction != string.Empty)
                 {
                     switch (ErrorHandlingAction)
                     {
+                        case "Ignore Error":
+                            ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
+                            ReportProgress("Ignoring Per Error Handling");
+                            break;
+
                         case "Continue Processing":
                             ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
                             ReportProgress("Continuing Per Error Handling");
-                            break;
-
+                            throw ex;
                         default:
                             throw ex;
                     }
@@ -483,7 +489,7 @@ namespace OpenBots.Engine
                         AutomationEngineContext.ScriptEngine.AddStatus("Pausing Before Exception");
 
                         DialogResult result = AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.LoadErrorForm(errorMessage);
-                       
+                        
                         ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
                         AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsUnhandledException = false;
 

@@ -41,11 +41,11 @@ namespace OpenBots.Core.Command
 		[Remarks("")]
 		public bool v_IsPrivate { get; set; }
 
-		[DisplayName("Continue On Error")]
-		[Description("Optional field for the command to continue running after encountering an error.")]
+		[DisplayName("Error Handling")]
+		[Description("Optional field for how to handle errors encountered.")]
 		[SampleUsage("")]
 		[Remarks("")]
-		public bool v_ContinueOnError { get; set; }
+		public string v_ErrorHandling { get; set; }
 
 		[DisplayName("Comment Field (Optional)")]
 		[Description("Optional field to enter a custom comment which could potentially describe this command or the need for this command, if required.")]
@@ -77,6 +77,7 @@ namespace OpenBots.Core.Command
 		{
 			CommandEnabled = false;
 			IsCommented = false;
+			v_ErrorHandling = "None";
 			GenerateID();
 		}
 

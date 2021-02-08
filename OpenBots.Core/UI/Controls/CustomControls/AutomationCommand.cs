@@ -38,7 +38,7 @@ namespace OpenBots.Core.UI.Controls.CustomControls
 
             //generate Private Checkbox (Control) if user did not add it
             var privateCheckBoxControlExists = renderedControls.Any(f => f.Name == "v_IsPrivate");
-            var continueCheckBoxControlExists = renderedControls.Any(f => f.Name == "v_ContinueOnError");
+            var continueComboBoxControlExists = renderedControls.Any(f => f.Name == "v_ErrorHandling");
 
             if (!privateCheckBoxControlExists)
             {
@@ -51,10 +51,14 @@ namespace OpenBots.Core.UI.Controls.CustomControls
                 //UIControls.Add(flpCheckBox);
             }
 
-            if (!continueCheckBoxControlExists)
+            if (!continueComboBoxControlExists)
             {
-                UIControls.Add(commandControls.CreateDefaultLabelFor("v_ContinueOnError", Command));
-                UIControls.Add(commandControls.CreateCheckBoxFor("v_ContinueOnError", Command));
+                UIControls.Add(commandControls.CreateDefaultLabelFor("v_ErrorHandling", Command));
+                ComboBox continueBox = (ComboBox)commandControls.CreateDropdownFor("v_ErrorHandling", Command);
+                continueBox.Items.Add("None");
+                continueBox.Items.Add("Continue Processing");
+                continueBox.Items.Add("Ignore Error");
+                UIControls.Add(continueBox);
             }
 
             //generate comment command if user did not generate it
