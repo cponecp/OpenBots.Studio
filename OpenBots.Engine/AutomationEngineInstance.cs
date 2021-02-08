@@ -459,8 +459,6 @@ namespace OpenBots.Engine
                     ErrorHandlingAction = parentCommand.v_ErrorHandling;
                 else
                     ErrorHandlingAction = string.Empty;
-                
-
 
                 //error occuured so decide what user selected
                 if (ErrorHandlingAction != string.Empty)
