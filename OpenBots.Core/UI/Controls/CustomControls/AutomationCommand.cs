@@ -37,9 +37,10 @@ namespace OpenBots.Core.UI.Controls.CustomControls
             }
 
             //generate Private Checkbox (Control) if user did not add it
-            var checkBoxControlExists = renderedControls.Any(f => f.Name == "v_IsPrivate");
+            var privateCheckBoxControlExists = renderedControls.Any(f => f.Name == "v_IsPrivate");
+            var continueCheckBoxControlExists = renderedControls.Any(f => f.Name == "v_ContinueOnError");
 
-            if (!checkBoxControlExists)
+            if (!privateCheckBoxControlExists)
             {
                 //TODO: when using a layoutpanel, checkbox is resetting when form closes
                 //FlowLayoutPanel flpCheckBox = new FlowLayoutPanel();
@@ -48,6 +49,12 @@ namespace OpenBots.Core.UI.Controls.CustomControls
                 UIControls.Add(commandControls.CreateDefaultLabelFor("v_IsPrivate", Command));
                 UIControls.Add(commandControls.CreateCheckBoxFor("v_IsPrivate", Command));
                 //UIControls.Add(flpCheckBox);
+            }
+
+            if (!continueCheckBoxControlExists)
+            {
+                UIControls.Add(commandControls.CreateDefaultLabelFor("v_ContinueOnError", Command));
+                UIControls.Add(commandControls.CreateCheckBoxFor("v_ContinueOnError", Command));
             }
 
             //generate comment command if user did not generate it

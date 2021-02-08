@@ -455,6 +455,11 @@ namespace OpenBots.Engine
                 string errorMessage = $"Source: {error.SourceFile}, Line: {error.LineNumber} {parentCommand.GetDisplayValue()}, " +
                         $"Exception Type: {error.ErrorType}, Exception Message: {error.ErrorMessage}";
 
+                if (parentCommand.v_ContinueOnError)
+                {
+                    ErrorHandlingAction = "Continue Processing";
+                }
+
                 //error occuured so decide what user selected
                 if (ErrorHandlingAction != string.Empty)
                 {

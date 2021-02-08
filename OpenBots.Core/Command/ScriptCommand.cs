@@ -41,6 +41,12 @@ namespace OpenBots.Core.Command
 		[Remarks("")]
 		public bool v_IsPrivate { get; set; }
 
+		[DisplayName("Continue On Error")]
+		[Description("Optional field for the command to continue running after encountering an error.")]
+		[SampleUsage("")]
+		[Remarks("")]
+		public bool v_ContinueOnError { get; set; }
+
 		[DisplayName("Comment Field (Optional)")]
 		[Description("Optional field to enter a custom comment which could potentially describe this command or the need for this command, if required.")]
 		[SampleUsage("I am using this command to ...")]
