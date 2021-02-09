@@ -92,7 +92,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OpenBots.Commands.Engine\ErrorHandlingCommand.cs" />
     <Compile Include="OpenBots.Commands.Engine\LogMessageCommand.cs" />
     <Compile Include="OpenBots.Commands.Engine\PauseScriptCommand.cs" />
     <Compile Include="OpenBots.Commands.Engine\SetEngineDelayCommand.cs" />

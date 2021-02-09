@@ -56,7 +56,7 @@ namespace OpenBots.Core.UI.Controls.CustomControls
                 UIControls.Add(commandControls.CreateDefaultLabelFor("v_ErrorHandling", Command));
                 ComboBox continueBox = (ComboBox)commandControls.CreateDropdownFor("v_ErrorHandling", Command);
                 continueBox.Items.Add("None");
-                continueBox.Items.Add("Continue Processing");
+                continueBox.Items.Add("Report Error");
                 continueBox.Items.Add("Ignore Error");
                 UIControls.Add(continueBox);
             }

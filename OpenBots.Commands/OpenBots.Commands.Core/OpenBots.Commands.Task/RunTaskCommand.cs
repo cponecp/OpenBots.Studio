@@ -401,7 +401,7 @@ namespace OpenBots.Commands.Task
 
 			//get errors from new engine (if any)
 			var newEngineErrors = childAutomationEngineInstance.ErrorsOccured;
-			if (newEngineErrors.Count > 0)
+			if (newEngineErrors.Count > 0 && v_ErrorHandling != "Ignore Error")
 			{
 				parentAutomationEngineIntance.ChildScriptFailed = true;
 				foreach (var error in newEngineErrors)

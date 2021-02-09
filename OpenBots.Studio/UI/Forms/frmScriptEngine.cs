@@ -458,7 +458,7 @@ namespace OpenBots.UI.Forms
 
             //get errors from new engine (if any)
             var newEngineErrors = childEngine.ErrorsOccured;
-            if (newEngineErrors.Count > 0)
+            if (newEngineErrors.Count > 0 && !(parentAutomationEngineIntance.LastExecutedCommand.CommandName == "RunTaskCommand" && parentAutomationEngineIntance.LastExecutedCommand.v_ErrorHandling == "Ignore Error"))
             {
                 parentAutomationEngineIntance.ChildScriptFailed = true;
                 foreach (var error in newEngineErrors)

@@ -418,8 +418,32 @@ namespace OpenBots.Engine
                     //sleep required time
                     Thread.Sleep(EngineSettings.DelayBetweenCommands);
 
+                    if (!parentCommand.v_ErrorHandling.Equals("None"))
+                        ErrorHandlingAction = parentCommand.v_ErrorHandling;
+                    else
+                        ErrorHandlingAction = string.Empty;
+
                     //run the command
-                    parentCommand.RunCommand(this);
+                    try
+                    {
+                        parentCommand.RunCommand(this);
+                    }
+                    catch (Exception ex)
+                    {
+                        switch (ErrorHandlingAction)
+                        {
+                            case "Ignore Error":
+                                ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
+                                ReportProgress("Ignoring Per Error Handling");
+                                break;
+                            case "Report Error":
+                                ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
+                                ReportProgress("Handling Error and Attempting to Continue");
+                                throw ex;
+                            default:
+                                throw ex;
+                        }
+                    }
 
                     if (parentCommand.CommandName == "LogMessageCommand")
                     {
@@ -455,72 +479,49 @@ namespace OpenBots.Engine
                 string errorMessage = $"Source: {error.SourceFile}, Line: {error.LineNumber} {parentCommand.GetDisplayValue()}, " +
                         $"Exception Type: {error.ErrorType}, Exception Message: {error.ErrorMessage}";
 
-                if (!parentCommand.v_ErrorHandling.Equals("None"))
-                    ErrorHandlingAction = parentCommand.v_ErrorHandling;
-                else
-                    ErrorHandlingAction = string.Empty;
 
-                //error occuured so decide what user selected
-                if (ErrorHandlingAction != string.Empty)
+                if (AutomationEngineContext.ScriptEngine != null && !command.IsExceptionIgnored && AutomationEngineContext.ScriptEngine.IsDebugMode)
                 {
-                    switch (ErrorHandlingAction)
-                    {
-                        case "Ignore Error":
-                            ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
-                            ReportProgress("Ignoring Per Error Handling");
-                            break;
+                    //load error form if exception is not handled
+                    AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsUnhandledException = true;
+                    AutomationEngineContext.ScriptEngine.AddStatus("Pausing Before Exception");
 
-                        case "Continue Processing":
-                            ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
-                            ReportProgress("Continuing Per Error Handling");
-                            throw ex;
-                        default:
-                            throw ex;
-                    }
-                }
-                else
-                {
-                    if (AutomationEngineContext.ScriptEngine != null && !command.IsExceptionIgnored && AutomationEngineContext.ScriptEngine.IsDebugMode)
-                    {
-                        //load error form if exception is not handled
-                        AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsUnhandledException = true;
-                        AutomationEngineContext.ScriptEngine.AddStatus("Pausing Before Exception");
+                    DialogResult result = DialogResult.OK;
+                    if (ErrorHandlingAction != "Ignore Error")
+                        result = AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.LoadErrorForm(errorMessage);
+                    ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
+                    AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsUnhandledException = false;
 
-                        DialogResult result = AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.LoadErrorForm(errorMessage);
-                        
-                        ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
-                        AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsUnhandledException = false;
+                    if (result == DialogResult.OK)
+                    {                           
+                        ReportProgress("Ignoring Per User Choice");
+                        ErrorsOccured.Clear();
 
-                        if (result == DialogResult.OK)
-                        {                           
-                            ReportProgress("Ignoring Per User Choice");
-                            ErrorsOccured.Clear();
-
-                            if (_isScriptSteppedIntoBeforeException)
-                            {
-                                AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsScriptSteppedInto = true;
-                                _isScriptSteppedIntoBeforeException = false;
-                            }
-                            else if (_isScriptSteppedOverBeforeException)
-                            {
-                                AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsScriptSteppedOver = true;
-                                _isScriptSteppedOverBeforeException = false;
-                            }
-
-                            AutomationEngineContext.ScriptEngine.uiBtnPause_Click(null, null);
-                        }
-                        else if (result == DialogResult.Abort || result == DialogResult.Cancel)
+                        if (_isScriptSteppedIntoBeforeException)
                         {
-                            ReportProgress("Continuing Per User Choice");
-                            AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.RemoveDebugTab();
-                            AutomationEngineContext.ScriptEngine.uiBtnPause_Click(null, null);                           
-                            throw ex;
+                            AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsScriptSteppedInto = true;
+                            _isScriptSteppedIntoBeforeException = false;
                         }
-                        //TODO: Add Break Option
+                        else if (_isScriptSteppedOverBeforeException)
+                        {
+                            AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsScriptSteppedOver = true;
+                            _isScriptSteppedOverBeforeException = false;
+                        }
+
+                        AutomationEngineContext.ScriptEngine.uiBtnPause_Click(null, null);
                     }
-                    else
+                    else if (result == DialogResult.Abort || result == DialogResult.Cancel)
+                    {
+                        ReportProgress("Continuing Per User Choice");
+                        AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.RemoveDebugTab();
+                        AutomationEngineContext.ScriptEngine.uiBtnPause_Click(null, null);                           
                         throw ex;
+                    }
+                    //TODO: Add Break Option
                 }
+                else
+                    throw ex;
+                
             }
         }     
 
