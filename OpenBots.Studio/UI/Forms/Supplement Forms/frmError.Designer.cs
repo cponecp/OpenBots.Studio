@@ -28,16 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmError));
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblErrorMessage = new System.Windows.Forms.Label();
             this.uiBtnIgnore = new OpenBots.Core.UI.Controls.UIPictureButton();
-            this.uiBtnContinue = new OpenBots.Core.UI.Controls.UIPictureButton();
+            this.uiBtnReport = new OpenBots.Core.UI.Controls.UIPictureButton();
             this.uiBtnCopyError = new OpenBots.Core.UI.Controls.UIPictureButton();
             this.uiBtnBreak = new OpenBots.Core.UI.Controls.UIPictureButton();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnIgnore)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiBtnContinue)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiBtnReport)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnCopyError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnBreak)).BeginInit();
             this.SuspendLayout();
@@ -82,23 +81,23 @@
             this.uiBtnIgnore.Text = "Ignore";
             this.uiBtnIgnore.Click += new System.EventHandler(this.uiBtnIgnore_Click);
             // 
-            // uiBtnContinue
+            // uiBtnReport
             // 
-            this.uiBtnContinue.BackColor = System.Drawing.Color.Transparent;
-            this.uiBtnContinue.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.uiBtnContinue.DisplayText = "Continue";
-            this.uiBtnContinue.DisplayTextBrush = System.Drawing.Color.White;
-            this.uiBtnContinue.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.uiBtnContinue.Image = global::OpenBots.Properties.Resources.engine_resume;
-            this.uiBtnContinue.IsMouseOver = false;
-            this.uiBtnContinue.Location = new System.Drawing.Point(510, 178);
-            this.uiBtnContinue.Margin = new System.Windows.Forms.Padding(8, 6, 8, 6);
-            this.uiBtnContinue.Name = "uiBtnContinue";
-            this.uiBtnContinue.Size = new System.Drawing.Size(60, 60);
-            this.uiBtnContinue.TabIndex = 24;
-            this.uiBtnContinue.TabStop = false;
-            this.uiBtnContinue.Text = "Continue";
-            this.uiBtnContinue.Click += new System.EventHandler(this.uiBtnContinue_Click);
+            this.uiBtnReport.BackColor = System.Drawing.Color.Transparent;
+            this.uiBtnReport.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.uiBtnReport.DisplayText = "Report";
+            this.uiBtnReport.DisplayTextBrush = System.Drawing.Color.White;
+            this.uiBtnReport.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.uiBtnReport.Image = global::OpenBots.Properties.Resources.engine_resume;
+            this.uiBtnReport.IsMouseOver = false;
+            this.uiBtnReport.Location = new System.Drawing.Point(510, 178);
+            this.uiBtnReport.Margin = new System.Windows.Forms.Padding(8, 6, 8, 6);
+            this.uiBtnReport.Name = "uiBtnReport";
+            this.uiBtnReport.Size = new System.Drawing.Size(60, 60);
+            this.uiBtnReport.TabIndex = 24;
+            this.uiBtnReport.TabStop = false;
+            this.uiBtnReport.Text = "Report";
+            this.uiBtnReport.Click += new System.EventHandler(this.uiBtnReport_Click);
             // 
             // uiBtnCopyError
             // 
@@ -145,10 +144,10 @@
             this.Controls.Add(this.uiBtnBreak);
             this.Controls.Add(this.uiBtnCopyError);
             this.Controls.Add(this.uiBtnIgnore);
-            this.Controls.Add(this.uiBtnContinue);
+            this.Controls.Add(this.uiBtnReport);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = OpenBots.Properties.Resources.OpenBots_ico;
+            this.Icon = global::OpenBots.Properties.Resources.OpenBots_ico;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmError";
@@ -157,7 +156,7 @@
             this.TopMost = true;
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnIgnore)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiBtnContinue)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiBtnReport)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnCopyError)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnBreak)).EndInit();
             this.ResumeLayout(false);
@@ -168,7 +167,7 @@
 
         private System.Windows.Forms.Panel panel1;
         private OpenBots.Core.UI.Controls.UIPictureButton uiBtnIgnore;
-        private OpenBots.Core.UI.Controls.UIPictureButton uiBtnContinue;
+        private OpenBots.Core.UI.Controls.UIPictureButton uiBtnReport;
         private System.Windows.Forms.Label lblErrorMessage;
         private OpenBots.Core.UI.Controls.UIPictureButton uiBtnCopyError;
         private OpenBots.Core.UI.Controls.UIPictureButton uiBtnBreak;

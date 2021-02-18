@@ -17,7 +17,7 @@ namespace OpenBots.UI.Forms.Supplement_Forms
             DialogResult = DialogResult.OK;
         }
 
-        private void uiBtnContinue_Click(object sender, EventArgs e)
+        private void uiBtnReport_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Abort;
         }
