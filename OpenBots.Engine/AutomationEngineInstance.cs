@@ -489,7 +489,7 @@ namespace OpenBots.Engine
                     DialogResult result = DialogResult.OK;
                     if (ErrorHandlingAction != "Ignore Error")
                         result = AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.LoadErrorForm(errorMessage);
-                    ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Error);
+                    ReportProgress("Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString(), LogEventLevel.Debug);
                     AutomationEngineContext.ScriptEngine.ScriptEngineContext.ScriptBuilder.IsUnhandledException = false;
 
                     if (result == DialogResult.OK)
